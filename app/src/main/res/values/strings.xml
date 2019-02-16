@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">IntellectualQuest</string>
+    <string name="app_key" />
 </resources>

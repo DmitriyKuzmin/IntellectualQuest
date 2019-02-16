@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+def MAXST_SDK_DIR = '../../../Android/MAXSTARSDK_Android_4.0.4/Build'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -16,6 +18,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets.main {
+        jni.srcDirs = []
+        jniLibs.srcDir "$MAXST_SDK_DIR"
+    }
+    archivesBaseName = rootProject.projectDir.getName()
 }
 
 dependencies {
@@ -25,4 +33,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'gun0912.ted:tedpermission:2.2.2'
+    implementation files("$MAXST_SDK_DIR/VideoPlayer.jar")
+    implementation files("$MAXST_SDK_DIR/MaxstAR.jar")
+    implementation files("$MAXST_SDK_DIR/BT200Ctrl.jar")
+    implementation files("$MAXST_SDK_DIR/BT350Ctrl.jar")
+    implementation files("$MAXST_SDK_DIR/com.osterhoutgroup.api.ext.jar")
 }
