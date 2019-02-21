@@ -1,30 +1,48 @@
-/*
- * Copyright 2016 Maxst, Inc. All Rights Reserved.
- */
-
 package com.kdp.quest.util;
 
 import android.opengl.GLES20;
 
-public abstract class ShaderUtil {
+/**
+ * Shader utilities
+ *
+ * @author DmitriyKuzmin <i>dmitriy.kuzmin910@gmail.com</i>
+ * @version 1.0
+ */
+public class ShaderUtil {
 
-	public static int createProgram(String vertexSrc, String fragmentSrc) {
-		int vertexShader = ShaderUtil.loadShader(GLES20.GL_VERTEX_SHADER, vertexSrc);
-		int fragmentShader = ShaderUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSrc);
+    /**
+     * Creating OpenGL program and loading vertex and fragment shader in her
+     *
+     * @param vertexSource   - vertex shader source
+     * @param fragmentSource - fragment shader source
+     * @return id created program
+     */
+    public static int createProgram(String vertexSource, String fragmentSource) {
 
-		int shaderProgramId = GLES20.glCreateProgram();
-		GLES20.glAttachShader(shaderProgramId, vertexShader);
-		GLES20.glAttachShader(shaderProgramId, fragmentShader);
-		GLES20.glLinkProgram(shaderProgramId);
+        int vertexShader = ShaderUtil.loadShader(GLES20.GL_VERTEX_SHADER, vertexSource);
+        int fragmentShader = ShaderUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
 
-		return shaderProgramId;
-	}
+        int shaderProgramId = GLES20.glCreateProgram();
 
-	private static int loadShader(int type, String shaderSrc) {
-		int shader;
-		shader = GLES20.glCreateShader(type);
-		GLES20.glShaderSource(shader, shaderSrc);
-		GLES20.glCompileShader(shader);
-		return shader;
-	}
+        GLES20.glAttachShader(shaderProgramId, vertexShader);
+        GLES20.glAttachShader(shaderProgramId, fragmentShader);
+        GLES20.glLinkProgram(shaderProgramId);
+
+        return shaderProgramId;
+    }
+
+    /**
+     * Loading and compiling shader
+     *
+     * @param type         - shader type (GL_VERTEX_SHADER, GL_FRAGMENT_SHADER)
+     * @param shaderSource - shader source
+     * @return compiled shader
+     */
+    private static int loadShader(int type, String shaderSource) {
+        int shader = GLES20.glCreateShader(type);
+        GLES20.glShaderSource(shader, shaderSource);
+        GLES20.glCompileShader(shader);
+
+        return shader;
+    }
 }
