@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
 
 import com.kdp.quest.renderer.BackgroundRenderHelper;
 import com.kdp.quest.renderer.ImageRender;
@@ -39,7 +38,7 @@ public class ImageTrackerRenderer implements Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        Bitmap bitmap = MaxstARUtil.getBitmapFromAsset("ImageTarget/Blocks.png", activity.getAssets());
+        Bitmap bitmap = MaxstARUtil.getBitmapFromAsset("TrackingResult/1.png", activity.getAssets());
         imageRender = new ImageRender();
         imageRender.setImage(bitmap);
         backgroundRenderHelper = new BackgroundRenderHelper();
@@ -59,19 +58,20 @@ public class ImageTrackerRenderer implements Renderer {
         GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight);
 
         TrackingState state = TrackerManager.getInstance().updateTrackingState();
-        TrackingResult trackingResult = state.getTrackingResult();
-
         TrackedImage image = state.getImage();
+
         float[] backgroundPlaneProjectionMatrix = CameraDevice.getInstance().getBackgroundPlaneProjectionMatrix();
         backgroundRenderHelper.drawBackground(image, backgroundPlaneProjectionMatrix);
 
-        float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
 
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+
+        float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
+        TrackingResult trackingResult = state.getTrackingResult();
         for (int i = 0; i < trackingResult.getCount(); i++) {
             Trackable trackable = trackingResult.getTrackable(i);
             switch (trackable.getName()) {
-                case "Lego":
+                case "Robot":
                     imageRender.setProjectionMatrix(projectionMatrix);
                     imageRender.setTransform(trackable.getPoseMatrix());
                     imageRender.setTranslate(0.0f, 0.0f, 0.0f);

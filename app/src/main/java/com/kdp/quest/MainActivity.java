@@ -16,34 +16,29 @@ import com.maxst.ar.TrackerManager;
 
 public class MainActivity extends ARActivity {
 
-    /**
-     *
-     */
+
     private GLSurfaceView glSurfaceView;
-    /**
-     *
-     */
     private int preferCameraResolution = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (!isSupportES2()) {
             Toast.makeText(this, "OpenGl ES 2.0 is not supported", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
+
         setContentView(R.layout.activity_main);
 
-
-        ImageTrackerRenderer imageTrackerRenderer = new ImageTrackerRenderer(this);
         glSurfaceView = findViewById(R.id.gl_surface_view);
         glSurfaceView.setEGLContextClientVersion(2);
-        glSurfaceView.setRenderer(imageTrackerRenderer);
+        glSurfaceView.setRenderer(new ImageTrackerRenderer(this));
 
-        TrackerManager.getInstance().addTrackerData("ImageTarget/Blocks.2dmap", true);
-        TrackerManager.getInstance().addTrackerData("ImageTarget/Glacier.2dmap", true);
-        TrackerManager.getInstance().addTrackerData("ImageTarget/Lego.2dmap", true);
+        TrackerManager.getInstance().addTrackerData("ImageTarget/Robot.2dmap", true);
+        TrackerManager.getInstance().addTrackerData("ImageTarget/Kish.2dmap", true);
+        TrackerManager.getInstance().addTrackerData("ImageTarget/ClearCode.2dmap", true);
         TrackerManager.getInstance().loadTrackerData();
 
         preferCameraResolution = getSharedPreferences(SampleUtil.PREF_NAME, Activity.MODE_PRIVATE).getInt(SampleUtil.PREF_KEY_CAM_RESOLUTION, 0);
@@ -52,18 +47,19 @@ public class MainActivity extends ARActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         glSurfaceView.onPause();
 
         TrackerManager.getInstance().stopTracker();
         CameraDevice.getInstance().stop();
-        MaxstAR.onPause();    }
+
+        MaxstAR.onPause();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         glSurfaceView.onResume();
+
         TrackerManager.getInstance().startTracker(TrackerManager.TRACKER_TYPE_IMAGE);
 
         ResultCode resultCode = ResultCode.Success;
@@ -89,10 +85,14 @@ public class MainActivity extends ARActivity {
         MaxstAR.onResume();
     }
 
+    /**
+     * System is support OpenGl ES2
+     *
+     * @return boolean true if system is support, else false
+     */
     private boolean isSupportES2() {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         return (configurationInfo.reqGlEsVersion >= 0x20000);
     }
 }
-
