@@ -1,19 +1,16 @@
-/*
- * Copyright 2017 Maxst, Inc. All Rights Reserved.
- */
 
 package com.kdp.quest;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.maxst.ar.MaxstAR;
 import com.maxst.ar.TrackerManager;
 
-public abstract class ARActivity extends Activity {
+
+public abstract class ARActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +35,6 @@ public abstract class ARActivity extends Activity {
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 
-		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-		} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-			Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-		}
 
 		MaxstAR.setScreenOrientation(newConfig.orientation);
 	}
