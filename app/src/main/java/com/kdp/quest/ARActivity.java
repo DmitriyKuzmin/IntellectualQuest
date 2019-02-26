@@ -18,9 +18,6 @@ public abstract class ARActivity extends AppCompatActivity {
 
 		MaxstAR.init(getApplicationContext(), "QeBzgTfJ6dmBlLjeK2rZHUBpM3yslDOBV/qyVgWL8dY=");
 		MaxstAR.setScreenOrientation(getResources().getConfiguration().orientation);
-
-		String sdkVersion = MaxstAR.getVersion();
-		Log.d("ARActivity", "SDK Version : " + sdkVersion);
 	}
 
 	@Override

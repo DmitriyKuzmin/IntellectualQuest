@@ -29,7 +29,7 @@ public class ImageTrackerRenderer implements Renderer {
 
     private BackgroundRenderHelper backgroundRenderHelper;
 
-    ImageTrackerRenderer(Activity activity) {
+    public ImageTrackerRenderer(Activity activity) {
         this.activity = activity;
     }
 
