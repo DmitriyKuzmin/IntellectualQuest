@@ -1,9 +1,11 @@
 package com.kdp.quest;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.kdp.quest.renderer.BackgroundRenderHelper;
 import com.kdp.quest.renderer.ImageRender;
@@ -24,10 +26,9 @@ public class ImageTrackerRenderer implements Renderer {
     private final Activity activity;
     private int surfaceWidth;
     private int surfaceHeight;
-
-    private ImageRender imageRender;
-
     private BackgroundRenderHelper backgroundRenderHelper;
+
+    private String currentTarget;
 
     public ImageTrackerRenderer(Activity activity) {
         this.activity = activity;
@@ -37,6 +38,8 @@ public class ImageTrackerRenderer implements Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+        currentTarget = "Robot";
 
         backgroundRenderHelper = new BackgroundRenderHelper();
     }
@@ -65,20 +68,58 @@ public class ImageTrackerRenderer implements Renderer {
 
         float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
         TrackingResult trackingResult = state.getTrackingResult();
+
+        if (trackingResult.getCount() <= 0){
+            Log.d("ImageTrackerRenderer","curreny target" + currentTarget );
+            invisibleButton();
+        }
+
         for (int i = 0; i < trackingResult.getCount(); i++) {
             Trackable trackable = trackingResult.getTrackable(i);
-            switch (trackable.getName()) {
-                case "Robot":
-                    imageRender = new ImageRender();
-                    imageRender.setImage(MaxstARUtil.getBitmapFromAsset("TrackingResult/1.png", activity.getAssets()));
-
-                    imageRender.setProjectionMatrix(projectionMatrix);
-                    imageRender.setTransform(trackable.getPoseMatrix());
-                    imageRender.setTranslate(0.0f, 0.0f, 0.0f);
-                    imageRender.setScale(trackable.getWidth(), trackable.getHeight(), 1.0f);
-                    imageRender.draw();
-                    break;
+            if (!trackable.getName().equals(currentTarget)) {
+                Log.d("ImageTrackerRenderer","curreny target" + currentTarget );
+                invisibleButton();
+                continue;
             }
+
+            ImageRender imageRender = new ImageRender();
+            imageRender.setImage(MaxstARUtil.getBitmapFromAsset("TrackingResult/1.png", activity.getAssets()));
+
+            imageRender.setProjectionMatrix(projectionMatrix);
+            imageRender.setTransform(trackable.getPoseMatrix());
+            imageRender.setTranslate(0.0f, 0.0f, 0.0f);
+            imageRender.setScale(trackable.getWidth(), trackable.getHeight(), 1.0f);
+            imageRender.draw();
+
+            visibleButton();
         }
+    }
+
+
+    private void visibleButton(){
+        Button btn = activity.findViewById(R.id.btn1);
+        if (btn.getVisibility() == View.VISIBLE)
+            return;
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.findViewById(R.id.btn1).setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void invisibleButton(){
+        Button btn = activity.findViewById(R.id.btn1);
+        Log.d("ImageTrackerRenderer","visibility" + btn.getVisibility());
+        if (btn.getVisibility() == View.INVISIBLE)
+            return;
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.findViewById(R.id.btn1).setVisibility(View.INVISIBLE);
+            }
+        });
     }
 }

@@ -32,14 +32,14 @@ public class CameraFragment extends Fragment {
 
     private GLSurfaceView glSurfaceView;
     private int preferCameraResolution = 0;
-
+    Button button;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
         Button cameraSizeTuneButton = view.findViewById(R.id.camera_size_tune_button);
-
+        button = view.findViewById(R.id.btn1);
         glSurfaceView = view.findViewById(R.id.gl_surface_view);
         glSurfaceView.setEGLContextClientVersion(2);
         glSurfaceView.setRenderer(new ImageTrackerRenderer(getActivity()));
@@ -48,7 +48,6 @@ public class CameraFragment extends Fragment {
         TrackerManager.getInstance().addTrackerData("ImageTarget/Kish.2dmap", true);
         TrackerManager.getInstance().addTrackerData("ImageTarget/ClearCode.2dmap", true);
         TrackerManager.getInstance().loadTrackerData();
-
 
         builder = new AlertDialog.Builder(getActivity());
 
@@ -125,4 +124,5 @@ public class CameraFragment extends Fragment {
         }
 
     }
+
 }
