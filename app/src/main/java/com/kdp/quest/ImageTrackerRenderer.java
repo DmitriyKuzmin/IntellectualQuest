@@ -38,9 +38,6 @@ public class ImageTrackerRenderer implements Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        Bitmap bitmap = MaxstARUtil.getBitmapFromAsset("TrackingResult/1.png", activity.getAssets());
-        imageRender = new ImageRender();
-        imageRender.setImage(bitmap);
         backgroundRenderHelper = new BackgroundRenderHelper();
     }
 
@@ -72,6 +69,9 @@ public class ImageTrackerRenderer implements Renderer {
             Trackable trackable = trackingResult.getTrackable(i);
             switch (trackable.getName()) {
                 case "Robot":
+                    imageRender = new ImageRender();
+                    imageRender.setImage(MaxstARUtil.getBitmapFromAsset("TrackingResult/1.png", activity.getAssets()));
+
                     imageRender.setProjectionMatrix(projectionMatrix);
                     imageRender.setTransform(trackable.getPoseMatrix());
                     imageRender.setTranslate(0.0f, 0.0f, 0.0f);
