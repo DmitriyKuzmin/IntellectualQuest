@@ -44,19 +44,6 @@ public class MainActivity extends ARActivity {
         loadFragment(new CameraFragment());
     }
 
-
-    /**
-     * Is support system Open ES2
-     *
-     * @return boolean - true if support, else false
-     */
-    private boolean isSupportES2() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        return (configurationInfo.reqGlEsVersion >= 0x20000);
-    }
-
-
     private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -82,6 +69,17 @@ public class MainActivity extends ARActivity {
             return false;
         }
     };
+
+    /**
+     * Is support system Open ES2
+     *
+     * @return boolean - true if support, else false
+     */
+    private boolean isSupportES2() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        return (configurationInfo.reqGlEsVersion >= 0x20000);
+    }
 
     /**
      * Loading fragment in frame container

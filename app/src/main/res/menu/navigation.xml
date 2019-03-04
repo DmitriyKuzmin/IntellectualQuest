@@ -3,14 +3,16 @@
 
     <item
         android:id="@+id/navigation_target"
+        android:icon="@drawable/ic_target"
         android:title="@string/title_target" />
 
     <item
         android:id="@+id/navigation_camera"
-        android:icon="@drawable/ic_camera_alt_black_24dp"
+        android:icon="@drawable/ic_camera"
         android:title="@string/title_camera" />
 
     <item
         android:id="@+id/navigation_info"
+        android:icon="@drawable/ic_info"
         android:title="@string/title_info" />
 </menu>

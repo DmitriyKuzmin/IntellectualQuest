@@ -8,12 +8,44 @@
     <android.opengl.GLSurfaceView
         android:id="@+id/gl_surface_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </android.opengl.GLSurfaceView>
+        android:layout_height="match_parent" />
 
-    <Button
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:drawableTop="@drawable/ic_camera_alt_black_24dp"
-        />
+    <LinearLayout
+        android:id="@+id/setting_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="20dp"
+        android:padding="1dp"
+        android:layout_gravity="right|center_vertical"
+        tools:ignore="RtlHardcoded">
+
+        <Button
+            android:id="@+id/camera_size_tune_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/ic_camera_size_tune"
+            />
+        <ToggleButton
+            android:id="@+id/toggle_direction_camera"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/toggle_direction_camera_selector" />
+
+        <ToggleButton
+            android:id="@+id/toggle_flash_light"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/toggle_flash_light_selector"/>
+
+
+
+    </LinearLayout>
 </FrameLayout>
