@@ -67,21 +67,22 @@
             android:visibility="invisible"/>
 
         <RelativeLayout
+            android:id="@+id/message_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/btn1"
             android:visibility="invisible">
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/edit_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/button"
+                android:layout_toStartOf="@+id/send_message"
                 tools:ignore="Autofill,LabelFor,TextFields"
                 android:textColor="@android:color/white"/>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/send_message"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"

@@ -1,14 +1,20 @@
 package com.kdp.quest;
 
 import android.app.Activity;
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
+import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.kdp.quest.renderer.BackgroundRenderHelper;
 import com.kdp.quest.renderer.ImageRender;
+import com.kdp.quest.util.SampleUtil;
 import com.maxst.ar.CameraDevice;
 import com.maxst.ar.MaxstAR;
 import com.maxst.ar.MaxstARUtil;
@@ -18,20 +24,31 @@ import com.maxst.ar.TrackerManager;
 import com.maxst.ar.TrackingResult;
 import com.maxst.ar.TrackingState;
 
+import java.util.Objects;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class ImageTrackerRenderer implements Renderer {
 
     private final Activity activity;
+    private final Fragment fragment;
     private int surfaceWidth;
     private int surfaceHeight;
     private BackgroundRenderHelper backgroundRenderHelper;
 
     private String currentTarget;
+    private String currentAnswer;
+    private String currentTrackingResult;
 
-    public ImageTrackerRenderer(Activity activity) {
+    private Button onTargetImage;
+    private View message_panel;
+    private Button sendMessageButton;
+    private EditText editMessage;
+
+    public ImageTrackerRenderer(Activity activity, Fragment fragment) {
         this.activity = activity;
+        this.fragment = fragment;
     }
 
 
@@ -39,7 +56,18 @@ public class ImageTrackerRenderer implements Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+        onTargetImage = activity.findViewById(R.id.btn1);
+        onTargetImage.setOnClickListener(onClickOnTargetButton);
+
+        message_panel = activity.findViewById(R.id.message_panel);
+        sendMessageButton = message_panel.findViewById(R.id.send_message);
+        editMessage = message_panel.findViewById(R.id.edit_message);
+
+        sendMessageButton.setOnClickListener(onClickSendMessageButton);
+
         currentTarget = "Robot";
+        currentAnswer = "96";
+        currentTrackingResult = "1";
 
         backgroundRenderHelper = new BackgroundRenderHelper();
     }
@@ -69,21 +97,19 @@ public class ImageTrackerRenderer implements Renderer {
         float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
         TrackingResult trackingResult = state.getTrackingResult();
 
-        if (trackingResult.getCount() <= 0){
-            Log.d("ImageTrackerRenderer","curreny target" + currentTarget );
+        if (trackingResult.getCount() <= 0) {
             invisibleButton();
         }
 
         for (int i = 0; i < trackingResult.getCount(); i++) {
             Trackable trackable = trackingResult.getTrackable(i);
             if (!trackable.getName().equals(currentTarget)) {
-                Log.d("ImageTrackerRenderer","curreny target" + currentTarget );
                 invisibleButton();
                 continue;
             }
 
             ImageRender imageRender = new ImageRender();
-            imageRender.setImage(MaxstARUtil.getBitmapFromAsset("TrackingResult/1.png", activity.getAssets()));
+            imageRender.setImage(MaxstARUtil.getBitmapFromAsset("TrackingResult/" + currentTrackingResult + ".png", activity.getAssets()));
 
             imageRender.setProjectionMatrix(projectionMatrix);
             imageRender.setTransform(trackable.getPoseMatrix());
@@ -96,30 +122,61 @@ public class ImageTrackerRenderer implements Renderer {
     }
 
 
-    private void visibleButton(){
-        Button btn = activity.findViewById(R.id.btn1);
-        if (btn.getVisibility() == View.VISIBLE)
+    private void visibleButton() {
+        if (onTargetImage.getVisibility() == View.VISIBLE)
             return;
 
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.findViewById(R.id.btn1).setVisibility(View.VISIBLE);
+                onTargetImage.setVisibility(View.VISIBLE);
             }
         });
     }
 
-    private void invisibleButton(){
-        Button btn = activity.findViewById(R.id.btn1);
-        Log.d("ImageTrackerRenderer","visibility" + btn.getVisibility());
-        if (btn.getVisibility() == View.INVISIBLE)
+    private void invisibleButton() {
+        if (onTargetImage.getVisibility() == View.INVISIBLE)
             return;
 
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                activity.findViewById(R.id.btn1).setVisibility(View.INVISIBLE);
+                onTargetImage.setVisibility(View.INVISIBLE);
+                message_panel.setVisibility(View.INVISIBLE);
+
+                SampleUtil.hideKeyboard(activity, fragment);
             }
         });
     }
+
+    private View.OnClickListener onClickOnTargetButton = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (message_panel.getVisibility() == View.INVISIBLE)
+                        message_panel.setVisibility(View.VISIBLE);
+                    else message_panel.setVisibility(View.INVISIBLE);
+
+                }
+            });
+        }
+    };
+
+    private View.OnClickListener onClickSendMessageButton = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String answer = editMessage.getText().toString();
+
+            /*if (answer.equals(currentAnswer)) {
+
+            } else {
+
+            }*/
+        }
+    };
+
+
 }

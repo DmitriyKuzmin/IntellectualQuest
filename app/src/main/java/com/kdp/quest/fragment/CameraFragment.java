@@ -42,7 +42,7 @@ public class CameraFragment extends Fragment {
         button = view.findViewById(R.id.btn1);
         glSurfaceView = view.findViewById(R.id.gl_surface_view);
         glSurfaceView.setEGLContextClientVersion(2);
-        glSurfaceView.setRenderer(new ImageTrackerRenderer(getActivity()));
+        glSurfaceView.setRenderer(new ImageTrackerRenderer(getActivity(), this));
 
         TrackerManager.getInstance().addTrackerData("ImageTarget/Robot.2dmap", true);
         TrackerManager.getInstance().addTrackerData("ImageTarget/Kish.2dmap", true);
