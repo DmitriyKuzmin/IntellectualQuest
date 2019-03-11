@@ -1,9 +1,11 @@
 package com.kdp.quest.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.media.ImageReader;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.kdp.quest.ImageTrackerRenderer;
+import com.kdp.quest.MainActivity;
 import com.kdp.quest.R;
 import com.kdp.quest.util.SampleUtil;
 import com.maxst.ar.CameraDevice;
@@ -26,23 +30,53 @@ import java.util.Objects;
 
 public class CameraFragment extends Fragment {
 
+    @SuppressLint("StaticFieldLeak")
+    private static CameraFragment instance;
 
     final String[] listItems = {"640x480", "1280x720", "1920x1080"};
     AlertDialog.Builder builder;
 
     private GLSurfaceView glSurfaceView;
     private int preferCameraResolution = 0;
-    Button button;
+
+
+    private Button onTargetImage;
+    private View message_panel;
+    private Button sendMessageButton;
+    private EditText editMessage;
+
+
+
+    public static CameraFragment getInstance() {
+        if (instance == null)
+            instance = new CameraFragment();
+
+        return instance;
+    }
+
+    @SuppressLint("ValidFragment")
+    private CameraFragment() {
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
         Button cameraSizeTuneButton = view.findViewById(R.id.camera_size_tune_button);
-        button = view.findViewById(R.id.btn1);
+
+        onTargetImage = view.findViewById(R.id.btn1);
+        onTargetImage.setOnClickListener(onClickOnTargetButton);
+
+        message_panel = view.findViewById(R.id.message_panel);
+        sendMessageButton = message_panel.findViewById(R.id.send_message);
+        editMessage = message_panel.findViewById(R.id.edit_message);
+
+        sendMessageButton.setOnClickListener(onClickSendMessageButton);
+
         glSurfaceView = view.findViewById(R.id.gl_surface_view);
         glSurfaceView.setEGLContextClientVersion(2);
-        glSurfaceView.setRenderer(new ImageTrackerRenderer(getActivity(), this));
+        glSurfaceView.setRenderer(new ImageTrackerRenderer(getActivity()));
 
         TrackerManager.getInstance().addTrackerData("ImageTarget/Robot.2dmap", true);
         TrackerManager.getInstance().addTrackerData("ImageTarget/Kish.2dmap", true);
@@ -124,5 +158,78 @@ public class CameraFragment extends Fragment {
         }
 
     }
+
+    public void visibleButton() {
+        if (onTargetImage.getVisibility() == View.VISIBLE)
+            return;
+
+        new Thread() {
+            @Override
+            public void run() {
+                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onTargetImage.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    public void invisibleButton() {
+        if (onTargetImage.getVisibility() == View.INVISIBLE)
+            return;
+
+        new Thread() {
+            @Override
+            public void run() {
+                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onTargetImage.setVisibility(View.INVISIBLE);
+                        message_panel.setVisibility(View.INVISIBLE);
+
+                        SampleUtil.hideKeyboard(Objects.requireNonNull(getActivity()), instance);
+                    }
+                });
+            }
+        }.start();
+
+    }
+
+    public View.OnClickListener onClickOnTargetButton = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            new Thread() {
+                @Override
+                public void run() {
+                    Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (message_panel.getVisibility() == View.INVISIBLE)
+                                message_panel.setVisibility(View.VISIBLE);
+                            else message_panel.setVisibility(View.INVISIBLE);
+
+                        }
+                    });
+                }
+            }.start();
+
+        }
+    };
+
+    public View.OnClickListener onClickSendMessageButton = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String answer = editMessage.getText().toString();
+
+            /*if (answer.equals(currentAnswer)) {
+
+            } else {
+
+            }*/
+        }
+    };
 
 }

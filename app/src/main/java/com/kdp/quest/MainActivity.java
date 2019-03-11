@@ -41,7 +41,7 @@ public class MainActivity extends ARActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         toolbar.setTitle("Camera");
-        loadFragment(new CameraFragment());
+        loadFragment(CameraFragment.getInstance());
     }
 
     private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {
@@ -51,7 +51,7 @@ public class MainActivity extends ARActivity {
             switch (menuItem.getItemId()) {
                 case R.id.navigation_camera:
                     toolbar.setTitle(getString(R.string.title_camera));
-                    fragment = new CameraFragment();
+                    fragment = CameraFragment.getInstance();
                     loadFragment(fragment);
                     return true;
                 case R.id.navigation_info:
