@@ -3,8 +3,12 @@ package com.kdp.quest;
 import android.app.Activity;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 
 import com.kdp.quest.fragment.CameraFragment;
+import com.kdp.quest.model.Target;
+import com.kdp.quest.model.TargetManager;
+import com.kdp.quest.model.Task;
 import com.kdp.quest.renderer.BackgroundRenderHelper;
 import com.kdp.quest.renderer.ImageRender;
 import com.maxst.ar.CameraDevice;
@@ -43,7 +47,8 @@ public class ImageTrackerRenderer implements Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // TODO Target and Task Manager
-        currentTarget = new Target("Robot");
+        currentTarget = TargetManager.getInstance(null).getCurrentTarget();
+
         currentTask = new Task("1", "96");
 
         imageRender = new ImageRender();
@@ -96,4 +101,11 @@ public class ImageTrackerRenderer implements Renderer {
             CameraFragment.getInstance().visibleButton();
         }
     }
+
+    public void updateTargetCurrent() {
+        imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
+        currentTarget = TargetManager.getInstance(null).getCurrentTarget();
+        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Current target: " + currentTarget);
+    }
+
 }

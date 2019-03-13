@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.media.ImageReader;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,14 +16,16 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.kdp.quest.ImageTrackerRenderer;
-import com.kdp.quest.MainActivity;
 import com.kdp.quest.R;
+import com.kdp.quest.model.Target;
+import com.kdp.quest.model.TargetManager;
 import com.kdp.quest.util.SampleUtil;
 import com.maxst.ar.CameraDevice;
 import com.maxst.ar.MaxstAR;
 import com.maxst.ar.ResultCode;
 import com.maxst.ar.TrackerManager;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -39,12 +40,12 @@ public class CameraFragment extends Fragment {
     private GLSurfaceView glSurfaceView;
     private int preferCameraResolution = 0;
 
+    private ImageTrackerRenderer trackerRenderer;
 
     private Button onTargetImage;
     private View message_panel;
     private Button sendMessageButton;
     private EditText editMessage;
-
 
 
     public static CameraFragment getInstance() {
@@ -56,6 +57,11 @@ public class CameraFragment extends Fragment {
 
     @SuppressLint("ValidFragment")
     private CameraFragment() {
+        ArrayList<Target> targets = new ArrayList<>();
+        targets.add(new Target("Robot"));
+        targets.add(new Target("ClearCode"));
+        targets.add(new Target("Kish"));
+        TargetManager.getInstance(targets);
     }
 
     @Override
@@ -76,12 +82,17 @@ public class CameraFragment extends Fragment {
 
         glSurfaceView = view.findViewById(R.id.gl_surface_view);
         glSurfaceView.setEGLContextClientVersion(2);
-        glSurfaceView.setRenderer(new ImageTrackerRenderer(getActivity()));
 
-        TrackerManager.getInstance().addTrackerData("ImageTarget/Robot.2dmap", true);
-        TrackerManager.getInstance().addTrackerData("ImageTarget/Kish.2dmap", true);
-        TrackerManager.getInstance().addTrackerData("ImageTarget/ClearCode.2dmap", true);
+        trackerRenderer = new ImageTrackerRenderer(getActivity());
+        glSurfaceView.setRenderer(trackerRenderer);
+
+        ArrayList<String> trackingFileName = TargetManager.getInstance(null).getTrackingFileName();
+
+        for (String s : trackingFileName) {
+            TrackerManager.getInstance().addTrackerData(s, true);
+        }
         TrackerManager.getInstance().loadTrackerData();
+
 
         builder = new AlertDialog.Builder(getActivity());
 
@@ -224,11 +235,10 @@ public class CameraFragment extends Fragment {
         public void onClick(View v) {
             String answer = editMessage.getText().toString();
 
-            /*if (answer.equals(currentAnswer)) {
-
-            } else {
-
-            }*/
+            if (answer.equals("95")) {
+                Target target = TargetManager.getInstance(null).getNextTarget();
+                trackerRenderer.updateTargetCurrent();
+            }
         }
     };
 

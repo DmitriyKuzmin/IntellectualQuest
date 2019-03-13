@@ -1,4 +1,4 @@
-package com.kdp.quest;
+package com.kdp.quest.model;
 
 
 public class Task {
@@ -8,7 +8,7 @@ public class Task {
     private String name;
     private String answer;
 
-    Task(String name, String answer) {
+    public Task(String name, String answer) {
         this.name = name;
         this.answer = answer;
     }
@@ -21,7 +21,7 @@ public class Task {
         return answer;
     }
 
-    String getPathTaskFile() {
+    public String getPathTaskFile() {
         return TASK_DIR + name + TASK_FORMAT;
     }
 }
