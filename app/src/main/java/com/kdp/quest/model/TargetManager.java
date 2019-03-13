@@ -1,8 +1,8 @@
 package com.kdp.quest.model;
 
 
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -13,24 +13,23 @@ public class TargetManager {
     private List<Target> targets;
     private Integer currentIterator = 0;
 
-    private TargetManager(ArrayList<Target> targets) {
+    private TargetManager(List<Target> targets) {
         this.targets = targets;
         targetIterator = targets.listIterator();
     }
 
-    public static TargetManager getInstance(ArrayList<Target> targets) {
+    public static TargetManager getInstance(List<Target> targets) {
         if (instance == null)
             instance = new TargetManager(targets);
 
         return instance;
     }
 
-    public Target getNextTarget() {
+    public void nextTarget() {
         if (targetIterator.hasNext()) {
             currentIterator = targetIterator.nextIndex();
-            return targetIterator.next();
+            targetIterator.next();
         }
-        return null;
     }
 
     public Target getCurrentTarget() {
@@ -40,8 +39,8 @@ public class TargetManager {
         return null;
     }
 
-    public ArrayList<String> getTrackingFileName() {
-        ArrayList<String> trackingFileName = new ArrayList<>();
+    public List<String> getTrackingFileName() {
+        List<String> trackingFileName = new ArrayList<>();
         for (Target target : targets) {
             trackingFileName.add(target.getPathTargetFile());
         }

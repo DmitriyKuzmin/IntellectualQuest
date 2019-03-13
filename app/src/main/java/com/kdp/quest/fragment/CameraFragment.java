@@ -17,15 +17,15 @@ import android.widget.EditText;
 
 import com.kdp.quest.ImageTrackerRenderer;
 import com.kdp.quest.R;
-import com.kdp.quest.model.Target;
 import com.kdp.quest.model.TargetManager;
+import com.kdp.quest.model.TaskManager;
 import com.kdp.quest.util.SampleUtil;
 import com.maxst.ar.CameraDevice;
 import com.maxst.ar.MaxstAR;
 import com.maxst.ar.ResultCode;
 import com.maxst.ar.TrackerManager;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -57,11 +57,7 @@ public class CameraFragment extends Fragment {
 
     @SuppressLint("ValidFragment")
     private CameraFragment() {
-        ArrayList<Target> targets = new ArrayList<>();
-        targets.add(new Target("Robot"));
-        targets.add(new Target("ClearCode"));
-        targets.add(new Target("Kish"));
-        TargetManager.getInstance(targets);
+
     }
 
     @Override
@@ -86,7 +82,7 @@ public class CameraFragment extends Fragment {
         trackerRenderer = new ImageTrackerRenderer(getActivity());
         glSurfaceView.setRenderer(trackerRenderer);
 
-        ArrayList<String> trackingFileName = TargetManager.getInstance(null).getTrackingFileName();
+        List<String> trackingFileName = TargetManager.getInstance(null).getTrackingFileName();
 
         for (String s : trackingFileName) {
             TrackerManager.getInstance().addTrackerData(s, true);
@@ -235,8 +231,10 @@ public class CameraFragment extends Fragment {
         public void onClick(View v) {
             String answer = editMessage.getText().toString();
 
-            if (answer.equals("95")) {
-                Target target = TargetManager.getInstance(null).getNextTarget();
+            if (answer.equals(TaskManager.getInstance(null).getCurrentTask().getAnswer())) {
+                TargetManager.getInstance(null).nextTarget();
+                TaskManager.getInstance(null).nextTask();
+
                 trackerRenderer.updateTargetCurrent();
             }
         }

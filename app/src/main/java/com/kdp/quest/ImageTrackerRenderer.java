@@ -9,6 +9,7 @@ import com.kdp.quest.fragment.CameraFragment;
 import com.kdp.quest.model.Target;
 import com.kdp.quest.model.TargetManager;
 import com.kdp.quest.model.Task;
+import com.kdp.quest.model.TaskManager;
 import com.kdp.quest.renderer.BackgroundRenderHelper;
 import com.kdp.quest.renderer.ImageRender;
 import com.maxst.ar.CameraDevice;
@@ -34,6 +35,7 @@ public class ImageTrackerRenderer implements Renderer {
     private Target currentTarget;
     private Task currentTask;
 
+    private Boolean changeImage = false;
 
     private ImageRender imageRender;
 
@@ -46,13 +48,12 @@ public class ImageTrackerRenderer implements Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        // TODO Target and Task Manager
-        currentTarget = TargetManager.getInstance(null).getCurrentTarget();
-
-        currentTask = new Task("1", "96");
-
         imageRender = new ImageRender();
+
+        currentTarget = TargetManager.getInstance(null).getCurrentTarget();
+        currentTask = TaskManager.getInstance(null).getCurrentTask();
         imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
+
         backgroundRenderHelper = new BackgroundRenderHelper();
     }
 
@@ -81,6 +82,11 @@ public class ImageTrackerRenderer implements Renderer {
         float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
         TrackingResult trackingResult = state.getTrackingResult();
 
+        if (changeImage){
+            imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
+            changeImage = false;
+        }
+
         if (trackingResult.getCount() <= 0) {
             CameraFragment.getInstance().invisibleButton();
         }
@@ -103,9 +109,11 @@ public class ImageTrackerRenderer implements Renderer {
     }
 
     public void updateTargetCurrent() {
-        imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
         currentTarget = TargetManager.getInstance(null).getCurrentTarget();
-        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Current target: " + currentTarget);
+        currentTask = TaskManager.getInstance(null).getCurrentTask();
+
+        changeImage = true;
+        //imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
     }
 
 }

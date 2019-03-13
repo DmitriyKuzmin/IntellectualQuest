@@ -17,6 +17,12 @@ import android.widget.Toast;
 import com.kdp.quest.fragment.CameraFragment;
 import com.kdp.quest.fragment.InfoFragment;
 import com.kdp.quest.fragment.TargetFragment;
+import com.kdp.quest.model.Target;
+import com.kdp.quest.model.TargetManager;
+import com.kdp.quest.model.Task;
+import com.kdp.quest.model.TaskManager;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends ARActivity {
@@ -42,6 +48,18 @@ public class MainActivity extends ARActivity {
 
         toolbar.setTitle("Camera");
         loadFragment(CameraFragment.getInstance());
+
+        ArrayList<Target> targets = new ArrayList<>();
+        targets.add(new Target("Robot"));
+        targets.add(new Target("ClearCode"));
+        targets.add(new Target("Kish"));
+        TargetManager.getInstance(targets);
+
+
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("1", "95"));
+        tasks.add(new Task("2", "4"));
+        TaskManager.getInstance(tasks);
     }
 
     private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {

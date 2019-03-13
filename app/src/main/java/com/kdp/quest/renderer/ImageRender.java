@@ -4,11 +4,15 @@ import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
+import android.util.Log;
 
+import com.kdp.quest.ImageTrackerRenderer;
 import com.kdp.quest.util.ShaderUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import javax.microedition.khronos.opengles.GL;
 
 public class ImageRender extends BaseRenderer {
     private static final String VERTEX_SHADER_SRC =
@@ -126,8 +130,8 @@ public class ImageRender extends BaseRenderer {
     }
 
     public void setImage(Bitmap image) {
+        Log.d(ImageTrackerRenderer.class.getSimpleName(), "size: " + image.getWidth() + "x" + image.getHeight());
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureNames[0]);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, image, 0);
-        image.recycle();
     }
 }
