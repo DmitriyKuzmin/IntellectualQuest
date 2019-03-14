@@ -15,10 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.kdp.quest.ImageTrackerRenderer;
+import com.kdp.quest.MainActivity;
 import com.kdp.quest.R;
 import com.kdp.quest.model.TargetManager;
 import com.kdp.quest.model.Task;
@@ -43,6 +47,7 @@ public class CameraFragment extends Fragment {
 
     private GLSurfaceView glSurfaceView;
     private int preferCameraResolution = 0;
+    private int preferCameraId = 0;
 
     private ImageTrackerRenderer trackerRenderer;
 
@@ -77,6 +82,9 @@ public class CameraFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        preferCameraResolution = Objects.requireNonNull(getActivity()).getSharedPreferences(SampleUtil.PREF_NAME, Activity.MODE_PRIVATE).getInt(SampleUtil.PREF_KEY_CAM_RESOLUTION, 0);
+        preferCameraId = Objects.requireNonNull(getActivity()).getSharedPreferences(SampleUtil.PREF_NAME, Activity.MODE_PRIVATE).getInt("cam_id", 0);
+
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
         onTargetImage = view.findViewById(R.id.btn1);
@@ -107,8 +115,12 @@ public class CameraFragment extends Fragment {
         Button cameraSizeTuneButton = view.findViewById(R.id.camera_size_tune_button);
         cameraSizeTuneButton.setOnClickListener(onClickTuneButton);
 
-        preferCameraResolution = Objects.requireNonNull(getActivity()).getSharedPreferences(SampleUtil.PREF_NAME, Activity.MODE_PRIVATE).getInt(SampleUtil.PREF_KEY_CAM_RESOLUTION, 0);
+        ToggleButton directionCameraToggleButton = view.findViewById(R.id.toggle_direction_camera);
+        directionCameraToggleButton.setChecked(preferCameraId == 1);
+        directionCameraToggleButton.setOnCheckedChangeListener(onCheckedChangeDirectionCameraToggleButton);
 
+        ToggleButton flashLightToggleButton = view.findViewById(R.id.toggle_flash_light);
+        flashLightToggleButton.setOnCheckedChangeListener(onCheckedChangeFlashLight);
         return view;
     }
 
@@ -119,7 +131,7 @@ public class CameraFragment extends Fragment {
 
         TrackerManager.getInstance().startTracker(TrackerManager.TRACKER_TYPE_IMAGE);
 
-        setCameraSize();
+        setCameraSize(preferCameraId);
         MaxstAR.onResume();
     }
 
@@ -143,7 +155,7 @@ public class CameraFragment extends Fragment {
             editor.putInt(SampleUtil.PREF_KEY_CAM_RESOLUTION, which);
             editor.apply();
 
-            setCameraSize();
+            setCameraSize(preferCameraId);
         }
     };
 
@@ -156,24 +168,28 @@ public class CameraFragment extends Fragment {
     };
 
 
-    private void setCameraSize() {
+    private void setCameraSize(int cameraId) {
         ResultCode resultCode = ResultCode.Success;
         switch (preferCameraResolution) {
             case 0:
-                resultCode = CameraDevice.getInstance().start(0, 640, 480);
+                resultCode = CameraDevice.getInstance().start(cameraId, 640, 480);
                 break;
             case 1:
-                resultCode = CameraDevice.getInstance().start(0, 1280, 720);
+                resultCode = CameraDevice.getInstance().start(cameraId, 1280, 720);
                 break;
             case 2:
-                resultCode = CameraDevice.getInstance().start(0, 1920, 1080);
+                resultCode = CameraDevice.getInstance().start(cameraId, 1920, 1080);
                 break;
         }
 
         if (resultCode != ResultCode.Success) {
             Objects.requireNonNull(getActivity()).finish();
         }
-
+        if (cameraId == 1) {
+            CameraDevice.getInstance().flipVideo(CameraDevice.FlipDirection.VERTICAL, true);
+        } else {
+            CameraDevice.getInstance().flipVideo(CameraDevice.FlipDirection.VERTICAL, false);
+        }
     }
 
     public void visibleButton() {
@@ -254,5 +270,36 @@ public class CameraFragment extends Fragment {
             }
         }
     };
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeDirectionCameraToggleButton = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isFront) {
+            CameraDevice.getInstance().stop();
+            if (isFront) {
+                preferCameraId = 1;
 
+                setCameraSize(1);
+                CameraDevice.getInstance().flipVideo(CameraDevice.FlipDirection.VERTICAL, true);
+            } else {
+                preferCameraId = 0;
+                setCameraSize(0);
+                CameraDevice.getInstance().flipVideo(CameraDevice.FlipDirection.VERTICAL, false);
+            }
+
+            SharedPreferences.Editor editor = Objects.requireNonNull(getActivity()).getSharedPreferences(SampleUtil.PREF_NAME, Activity.MODE_PRIVATE).edit();
+            editor.putInt("cam_id", preferCameraId);
+            editor.apply();
+        }
+    };
+
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeFlashLight = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked){
+                CameraDevice.getInstance().setFlashLightMode(true);
+            }else{
+                CameraDevice.getInstance().setFlashLightMode(false);
+
+            }
+        }
+    };
 }
