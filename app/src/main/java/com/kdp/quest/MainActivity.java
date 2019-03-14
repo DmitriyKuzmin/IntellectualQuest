@@ -21,8 +21,10 @@ import com.kdp.quest.model.Target;
 import com.kdp.quest.model.TargetManager;
 import com.kdp.quest.model.Task;
 import com.kdp.quest.model.TaskManager;
+import com.maxst.ar.TrackerManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ARActivity {
@@ -59,7 +61,15 @@ public class MainActivity extends ARActivity {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new Task("1", "95"));
         tasks.add(new Task("2", "4"));
+        tasks.add(new Task("3", "120"));
         TaskManager.getInstance(tasks);
+
+
+        List<String> trackingFileName = TargetManager.getInstance(null).getTrackingFileName();
+        for (String s : trackingFileName) {
+            TrackerManager.getInstance().addTrackerData(s, true);
+        }
+        TrackerManager.getInstance().loadTrackerData();
     }
 
     private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {

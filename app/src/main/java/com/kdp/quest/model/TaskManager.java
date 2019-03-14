@@ -9,7 +9,7 @@ public class TaskManager {
     private ListIterator<Task> taskIterator;
     private List<Task> tasks;
     private Integer currentIterator = 0;
-
+    private Integer countTasks;
 
     public static TaskManager getInstance(List<Task> tasks) {
         if (instance == null)
@@ -20,7 +20,9 @@ public class TaskManager {
 
     private TaskManager(List<Task> tasks) {
         this.tasks = tasks;
+        countTasks = tasks.size();
         taskIterator = tasks.listIterator();
+        this.nextTask();
     }
 
     public void nextTask() {
@@ -35,5 +37,13 @@ public class TaskManager {
             return tasks.get(currentIterator);
 
         return null;
+    }
+
+    public Integer getCurrentIterator() {
+        return currentIterator;
+    }
+
+    public Integer getCountTasks() {
+        return countTasks;
     }
 }

@@ -12,10 +12,13 @@ public class TargetManager {
     private ListIterator<Target> targetIterator;
     private List<Target> targets;
     private Integer currentIterator = 0;
+    private Integer countTargets;
 
     private TargetManager(List<Target> targets) {
         this.targets = targets;
+        countTargets = targets.size();
         targetIterator = targets.listIterator();
+        this.nextTarget();
     }
 
     public static TargetManager getInstance(List<Target> targets) {
@@ -45,5 +48,9 @@ public class TargetManager {
             trackingFileName.add(target.getPathTargetFile());
         }
         return trackingFileName;
+    }
+
+    public Integer getCountTargets() {
+        return countTargets;
     }
 }

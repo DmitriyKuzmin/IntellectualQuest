@@ -8,16 +8,20 @@ import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.kdp.quest.ImageTrackerRenderer;
 import com.kdp.quest.R;
 import com.kdp.quest.model.TargetManager;
+import com.kdp.quest.model.Task;
 import com.kdp.quest.model.TaskManager;
 import com.kdp.quest.util.SampleUtil;
 import com.maxst.ar.CameraDevice;
@@ -44,9 +48,9 @@ public class CameraFragment extends Fragment {
 
     private Button onTargetImage;
     private View message_panel;
-    private Button sendMessageButton;
     private EditText editMessage;
-
+    private TextView progressBar;
+    private String maxCount;
 
     public static CameraFragment getInstance() {
         if (instance == null)
@@ -57,44 +61,50 @@ public class CameraFragment extends Fragment {
 
     @SuppressLint("ValidFragment")
     private CameraFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Разрешение экрана");
+        builder.setItems(listItems, onClickDialogItems);
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
-        Button cameraSizeTuneButton = view.findViewById(R.id.camera_size_tune_button);
-
         onTargetImage = view.findViewById(R.id.btn1);
         onTargetImage.setOnClickListener(onClickOnTargetButton);
 
         message_panel = view.findViewById(R.id.message_panel);
-        sendMessageButton = message_panel.findViewById(R.id.send_message);
         editMessage = message_panel.findViewById(R.id.edit_message);
 
+        Integer countTasks = TaskManager.getInstance(null).getCountTasks();
+        Integer countTargets = TargetManager.getInstance(null).getCountTargets();
+        Integer maxCount = (countTargets > countTasks) ? countTasks : countTargets;
+        this.maxCount = maxCount.toString();
+
+        progressBar = view.findViewById(R.id.progress_bar);
+
+        Integer iterator = TaskManager.getInstance(null).getCurrentIterator();
+        progressBar.setText("Пройдено " + iterator.toString() + " из " + this.maxCount);
+
+        Button sendMessageButton = message_panel.findViewById(R.id.send_message);
         sendMessageButton.setOnClickListener(onClickSendMessageButton);
 
         glSurfaceView = view.findViewById(R.id.gl_surface_view);
         glSurfaceView.setEGLContextClientVersion(2);
-
         trackerRenderer = new ImageTrackerRenderer(getActivity());
         glSurfaceView.setRenderer(trackerRenderer);
 
-        List<String> trackingFileName = TargetManager.getInstance(null).getTrackingFileName();
 
-        for (String s : trackingFileName) {
-            TrackerManager.getInstance().addTrackerData(s, true);
-        }
-        TrackerManager.getInstance().loadTrackerData();
-
-
-        builder = new AlertDialog.Builder(getActivity());
-
-        builder.setTitle("Разрешение экрана");
-        builder.setItems(listItems, onClickDialogItems);
-
+        Button cameraSizeTuneButton = view.findViewById(R.id.camera_size_tune_button);
         cameraSizeTuneButton.setOnClickListener(onClickTuneButton);
 
         preferCameraResolution = Objects.requireNonNull(getActivity()).getSharedPreferences(SampleUtil.PREF_NAME, Activity.MODE_PRIVATE).getInt(SampleUtil.PREF_KEY_CAM_RESOLUTION, 0);
@@ -227,6 +237,7 @@ public class CameraFragment extends Fragment {
     };
 
     public View.OnClickListener onClickSendMessageButton = new View.OnClickListener() {
+        @SuppressLint("SetTextI18n")
         @Override
         public void onClick(View v) {
             String answer = editMessage.getText().toString();
@@ -235,6 +246,10 @@ public class CameraFragment extends Fragment {
                 TargetManager.getInstance(null).nextTarget();
                 TaskManager.getInstance(null).nextTask();
 
+                Integer iterator = TaskManager.getInstance(null).getCurrentIterator();
+                Log.d(CameraFragment.class.getSimpleName(), "iterator: " + iterator.toString());
+
+                progressBar.setText("Пройдено " + iterator.toString() + " из " + maxCount);
                 trackerRenderer.updateTargetCurrent();
             }
         }

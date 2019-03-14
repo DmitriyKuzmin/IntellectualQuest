@@ -35,7 +35,7 @@ public class ImageTrackerRenderer implements Renderer {
     private Target currentTarget;
     private Task currentTask;
 
-    private Boolean changeImage = false;
+    private Boolean changeImage = true;
 
     private ImageRender imageRender;
 
@@ -47,12 +47,8 @@ public class ImageTrackerRenderer implements Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
         imageRender = new ImageRender();
-
-        currentTarget = TargetManager.getInstance(null).getCurrentTarget();
-        currentTask = TaskManager.getInstance(null).getCurrentTask();
-        imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
+        updateTargetCurrent();
 
         backgroundRenderHelper = new BackgroundRenderHelper();
     }
