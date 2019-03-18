@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 
-def MAXST_SDK_DIR = '../../sdk/MAXSTARSDK_Android_4.0.4/Build'
+def MAXST_SDK_DIR = '../../MAXSTSDK/Build'
 
 android {
     compileSdkVersion 28
