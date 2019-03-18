@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="60dp"
         android:orientation="vertical"
         android:padding="1dp"
@@ -78,16 +78,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@+id/send_message"
-                tools:ignore="Autofill,LabelFor,TextFields"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:inputType="number|text"
+                tools:ignore="Autofill,LabelFor" />
 
             <Button
                 android:id="@+id/send_message"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/ic_camera_send"
-                tools:ignore="RtlHardcoded" />
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_camera_send" />
         </RelativeLayout>
 
     </RelativeLayout>
@@ -96,10 +96,9 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:textSize="20dp"
-        android:text="Пройдено 0 из 5"
-        android:textColor="@android:color/white"
-        tools:ignore="HardcodedText,RtlHardcoded,SpUsage" />
+        android:textSize="20sp"
+        android:text="@string/progress"
+        android:textColor="@android:color/white" />
 </FrameLayout>

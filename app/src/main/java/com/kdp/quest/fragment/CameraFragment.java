@@ -18,14 +18,11 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.kdp.quest.ImageTrackerRenderer;
-import com.kdp.quest.MainActivity;
 import com.kdp.quest.R;
 import com.kdp.quest.model.TargetManager;
-import com.kdp.quest.model.Task;
 import com.kdp.quest.model.TaskManager;
 import com.kdp.quest.util.SampleUtil;
 import com.maxst.ar.CameraDevice;
@@ -33,7 +30,6 @@ import com.maxst.ar.MaxstAR;
 import com.maxst.ar.ResultCode;
 import com.maxst.ar.TrackerManager;
 
-import java.util.List;
 import java.util.Objects;
 
 
@@ -55,7 +51,7 @@ public class CameraFragment extends Fragment {
     private View message_panel;
     private EditText editMessage;
     private TextView progressBar;
-    private String maxCount;
+    private int maxCount;
 
     public static CameraFragment getInstance() {
         if (instance == null)
@@ -78,7 +74,7 @@ public class CameraFragment extends Fragment {
 
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "ResourceType"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -96,12 +92,12 @@ public class CameraFragment extends Fragment {
         Integer countTasks = TaskManager.getInstance(null).getCountTasks();
         Integer countTargets = TargetManager.getInstance(null).getCountTargets();
         Integer maxCount = (countTargets > countTasks) ? countTasks : countTargets;
-        this.maxCount = maxCount.toString();
-
-        progressBar = view.findViewById(R.id.progress_bar);
+        this.maxCount = maxCount;
 
         Integer iterator = TaskManager.getInstance(null).getCurrentIterator();
-        progressBar.setText("Пройдено " + iterator.toString() + " из " + this.maxCount);
+        progressBar = view.findViewById(R.id.progress_bar);
+        progressBar.setText(getString(R.string.progress, iterator,maxCount));
+        //progressBar.setText("Пройдено " + iterator.toString() + " из " + this.maxCount);
 
         Button sendMessageButton = message_panel.findViewById(R.id.send_message);
         sendMessageButton.setOnClickListener(onClickSendMessageButton);
@@ -253,7 +249,7 @@ public class CameraFragment extends Fragment {
     };
 
     public View.OnClickListener onClickSendMessageButton = new View.OnClickListener() {
-        @SuppressLint("SetTextI18n")
+        @SuppressLint({"SetTextI18n", "ResourceType"})
         @Override
         public void onClick(View v) {
             String answer = editMessage.getText().toString();
@@ -265,7 +261,8 @@ public class CameraFragment extends Fragment {
                 Integer iterator = TaskManager.getInstance(null).getCurrentIterator();
                 Log.d(CameraFragment.class.getSimpleName(), "iterator: " + iterator.toString());
 
-                progressBar.setText("Пройдено " + iterator.toString() + " из " + maxCount);
+                progressBar.setText(getString(R.string.progress, iterator, maxCount));
+
                 trackerRenderer.updateTargetCurrent();
             }
         }
