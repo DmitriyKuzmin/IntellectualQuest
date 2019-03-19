@@ -35,12 +35,6 @@ public class MainActivity extends ARActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!isSupportES2()) {
-            Toast.makeText(this, "OpenGl ES 2.0 is not supported", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
         setContentView(R.layout.activity_main);
 
         toolbar = getSupportActionBar();
@@ -97,17 +91,6 @@ public class MainActivity extends ARActivity {
             return false;
         }
     };
-
-    /**
-     * Is support system Open ES2
-     *
-     * @return boolean - true if support, else false
-     */
-    private boolean isSupportES2() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        return (configurationInfo.reqGlEsVersion >= 0x20000);
-    }
 
     /**
      * Loading fragment in frame container

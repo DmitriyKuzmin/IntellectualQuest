@@ -11,6 +11,9 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.util.List;
 
+/**
+ *
+ */
 public class PermissionCheckActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -9,12 +9,14 @@ import java.util.Objects;
 
 public class SampleUtil {
 
-	public static final String PREF_NAME = "pref";
-	public static final String PREF_KEY_CAM_RESOLUTION = "cam_resolution";
+    public static final int FRONT_CAMERA = 1;
+    public static final int REAR_CAMERA = 0;
 
-	public static void hideKeyboard(Activity activity, Fragment fragment) {
-		InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-		IBinder windowToken = Objects.requireNonNull(fragment.getView()).getRootView().getWindowToken();
-		imm.hideSoftInputFromWindow(windowToken, 0);
-	}
+    public static final int EGLContext_CLIENT_VERSION = 2;
+
+    public static void hideKeyboard(Activity activity, Fragment fragment) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        IBinder windowToken = Objects.requireNonNull(fragment.getView()).getRootView().getWindowToken();
+        imm.hideSoftInputFromWindow(windowToken, 0);
+    }
 }

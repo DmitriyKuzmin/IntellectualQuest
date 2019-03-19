@@ -108,8 +108,13 @@ public class ImageTrackerRenderer implements Renderer {
         currentTarget = TargetManager.getInstance(null).getCurrentTarget();
         currentTask = TaskManager.getInstance(null).getCurrentTask();
 
+        Log.d(ImageTrackerRenderer.class.getSimpleName(), "------------------------");
+        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Update Current: ");
+        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Target: " + currentTarget);
+        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Task: " + currentTask);
+        Log.d(ImageTrackerRenderer.class.getSimpleName(), "------------------------");
+
         changeImage = true;
-        //imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
     }
 
 }
