@@ -22,14 +22,18 @@ import com.maxst.ar.TrackingResult;
 import com.maxst.ar.TrackingState;
 
 
+import java.util.Arrays;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class ImageTrackerRenderer implements Renderer {
 
     private final Activity activity;
+
     private int surfaceWidth;
     private int surfaceHeight;
+
     private BackgroundRenderHelper backgroundRenderHelper;
 
     private Target currentTarget;
@@ -95,6 +99,14 @@ public class ImageTrackerRenderer implements Renderer {
             }
 
             imageRender.setProjectionMatrix(projectionMatrix);
+
+            Log.d(ImageTrackerRenderer.class.getSimpleName(), "----------------------------------------------");
+            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Projection matrix: " + Arrays.toString(projectionMatrix));
+            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Trackable pose Matrix: " + Arrays.toString(trackable.getPoseMatrix()));
+            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Width: " + trackable.getWidth());
+            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Height: " + trackable.getHeight());
+            Log.d(ImageTrackerRenderer.class.getSimpleName(), "----------------------------------------------");
+
             imageRender.setTransform(trackable.getPoseMatrix());
             imageRender.setTranslate(0.0f, 0.0f, 0.0f);
             imageRender.setScale(trackable.getWidth(), trackable.getHeight(), 1.0f);

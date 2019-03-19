@@ -46,9 +46,11 @@ public class MainActivity extends ARActivity {
         loadFragment(CameraFragment.getInstance());
 
         ArrayList<Target> targets = new ArrayList<>();
-        targets.add(new Target("Robot"));
-        targets.add(new Target("ClearCode"));
-        targets.add(new Target("Kish"));
+
+        targets.add(new Target("Robot", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultrices odio sed neque interdum pellentesque. Fusce sed sapien neque. Pellentesque consectetur, elit nec commodo molestie, nisi odio convallis lectus, quis sodales libero nibh non urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque accumsan eleifend enim, eget luctus leo tincidunt ac. Donec non metus turpis. Cras at mauris velit. Nam semper dapibus est, at interdum dui maximus ut."));
+        targets.add(new Target("ClearCode", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultrices odio sed neque interdum pellentesque. Fusce sed sapien neque. Pellentesque consectetur, elit nec commodo molestie, nisi odio convallis lectus, quis sodales libero nibh non urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque accumsan eleifend enim, eget luctus leo tincidunt ac. Donec non metus turpis. Cras at mauris velit. Nam semper dapibus est, at interdum dui maximus ut."));
+        targets.add(new Target("Kish", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultrices odio sed neque interdum pellentesque. Fusce sed sapien neque. Pellentesque consectetur, elit nec commodo molestie, nisi odio convallis lectus, quis sodales libero nibh non urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque accumsan eleifend enim, eget luctus leo tincidunt ac. Donec non metus turpis. Cras at mauris velit. Nam semper dapibus est, at interdum dui maximus ut."));
+
         TargetManager.getInstance(targets);
 
 

@@ -12,8 +12,6 @@ import com.kdp.quest.util.ShaderUtil;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import javax.microedition.khronos.opengles.GL;
-
 public class ImageRender extends BaseRenderer {
     private static final String VERTEX_SHADER_SRC =
             "attribute vec4 a_position;\n" +

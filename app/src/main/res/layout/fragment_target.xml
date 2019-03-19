@@ -26,14 +26,15 @@
             android:layout_centerHorizontal="true"/>
 
         <TextView
-            android:paddingTop="10dp"
+            android:id="@+id/target_text"
+            android:paddingTop="15dp"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:layout_width="150dp"
+            android:layout_width="230dp"
             android:layout_centerHorizontal="true"
+            android:layout_gravity="center_vertical|end"
             android:layout_height="match_parent"
             android:layout_below="@+id/target_image"
-            android:textAlignment="center"
             android:text="Текст о нахождении текущей цели. \n Много текста о нахождении текущей цели)"
             tools:ignore="HardcodedText" />
     </RelativeLayout>

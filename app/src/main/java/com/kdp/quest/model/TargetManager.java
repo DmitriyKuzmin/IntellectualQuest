@@ -45,7 +45,7 @@ public class TargetManager {
     public List<String> getTrackingFileName() {
         List<String> trackingFileName = new ArrayList<>();
         for (Target target : targets) {
-            trackingFileName.add(target.getPathTargetFile());
+            trackingFileName.add(target.getPathTargetMapFile());
         }
         return trackingFileName;
     }
