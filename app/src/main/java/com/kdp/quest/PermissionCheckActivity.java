@@ -12,7 +12,7 @@ import com.gun0912.tedpermission.TedPermission;
 import java.util.List;
 
 /**
- *
+ * Makes it easy to check and request android permissions
  */
 public class PermissionCheckActivity extends Activity {
     @Override
