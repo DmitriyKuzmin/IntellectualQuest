@@ -1,12 +1,12 @@
 package com.kdp.quest.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +31,8 @@ import java.util.Objects;
 
 public class CameraFragment extends Fragment {
 
+    private Activity activity;
+
     @SuppressLint("StaticFieldLeak")
     private static CameraFragment instance;
 
@@ -41,12 +43,12 @@ public class CameraFragment extends Fragment {
 
     private Button onTargetImageButton;
 
-    private View answer_panel;
+    private View answerPanel;
     private EditText editAnswer;
 
     private int maxCount;
 
-    private int camera_id = SampleUtil.REAR_CAMERA;
+    private int camera = SampleUtil.REAR_CAMERA;
 
     public static CameraFragment getInstance() {
         if (instance == null)
@@ -56,41 +58,33 @@ public class CameraFragment extends Fragment {
     }
 
     @SuppressLint("ValidFragment")
-    private CameraFragment() {
-    }
+    private CameraFragment() { }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = getActivity();
     }
 
-    @SuppressLint({"SetTextI18n", "ResourceType"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
         onTargetImageButton = view.findViewById(R.id.on_target_image_btn);
         onTargetImageButton.setOnClickListener(onClickOnTargetButton);
 
-        answer_panel = view.findViewById(R.id.answer_panel);
-        editAnswer = answer_panel.findViewById(R.id.edit_message);
+        answerPanel = view.findViewById(R.id.answer_panel);
+        editAnswer = answerPanel.findViewById(R.id.edit_message);
 
-        int countTasks = TaskManager.getInstance(null).getCountTasks();
-        int countTargets = TargetManager.getInstance(null).getCountTargets();
-        this.maxCount = (countTargets > countTasks) ? countTasks : countTargets;
-        int iterator = TaskManager.getInstance(null).getCurrentIterator();
         progressBar = view.findViewById(R.id.progress_bar);
-        progressBar.setText(getString(R.string.progress, iterator, maxCount));
 
-        Button sendAnswerButton = answer_panel.findViewById(R.id.sendAnswerButton);
+        Button sendAnswerButton = answerPanel.findViewById(R.id.sendAnswerButton);
         sendAnswerButton.setOnClickListener(onClickSendMessageButton);
 
         glSurfaceView = view.findViewById(R.id.gl_surface_view);
         glSurfaceView.setEGLContextClientVersion(SampleUtil.EGLContext_CLIENT_VERSION);
 
-        trackerRenderer = new ImageTrackerRenderer(getActivity());
+        trackerRenderer = new ImageTrackerRenderer(activity);
         glSurfaceView.setRenderer(trackerRenderer);
 
 
@@ -100,6 +94,7 @@ public class CameraFragment extends Fragment {
 
         ToggleButton flashLightToggleButton = view.findViewById(R.id.toggle_flash_light);
         flashLightToggleButton.setOnCheckedChangeListener(onCheckedChangeFlashLight);
+
         return view;
     }
 
@@ -110,7 +105,7 @@ public class CameraFragment extends Fragment {
 
         TrackerManager.getInstance().startTracker(TrackerManager.TRACKER_TYPE_IMAGE);
 
-        cameraStart(camera_id);
+        cameraStart(camera);
         MaxstAR.onResume();
     }
 
@@ -125,55 +120,46 @@ public class CameraFragment extends Fragment {
         MaxstAR.onPause();
     }
 
-
+    /**
+     * Start Camera of Device
+     *
+     * @param cameraId - {@link SampleUtil#FRONT_CAMERA} or {@link SampleUtil#REAR_CAMERA}
+     */
     private void cameraStart(int cameraId) {
         ResultCode resultCode = CameraDevice.getInstance().start(cameraId, 640, 480);
 
         if (resultCode != ResultCode.Success) {
-            Log.d(CameraFragment.class.getSimpleName(), "Finish Camera");
-            Objects.requireNonNull(getActivity()).finish();
+            //TODO Message of error
+            activity.finish();
         }
 
         CameraDevice.getInstance().flipVideo(CameraDevice.FlipDirection.VERTICAL, cameraId == 1);
-
     }
 
-    public void visibleButton() {
-        if (onTargetImageButton.getVisibility() == View.VISIBLE)
+    /**
+     * Set the visibility state of OnTargetImage Button
+     *
+     * @param visibility - {@link View#VISIBLE}, {@link View#INVISIBLE}
+     */
+    public void setVisibilityOnTargetImageButton(final int visibility) {
+        if (onTargetImageButton.getVisibility() == visibility)
             return;
 
         new Thread() {
             @Override
             public void run() {
-                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        onTargetImageButton.setVisibility(View.VISIBLE);
+                        onTargetImageButton.setVisibility(visibility);
+                        if (visibility == View.INVISIBLE) {
+                            answerPanel.setVisibility(visibility);
+                            SampleUtil.hideKeyboard(activity, instance);
+                        }
                     }
                 });
             }
         }.start();
-    }
-
-    public void invisibleButton() {
-        if (onTargetImageButton.getVisibility() == View.INVISIBLE)
-            return;
-
-        new Thread() {
-            @Override
-            public void run() {
-                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        onTargetImageButton.setVisibility(View.INVISIBLE);
-                        answer_panel.setVisibility(View.INVISIBLE);
-
-                        SampleUtil.hideKeyboard(Objects.requireNonNull(getActivity()), instance);
-                    }
-                });
-            }
-        }.start();
-
     }
 
     public View.OnClickListener onClickOnTargetButton = new View.OnClickListener() {
@@ -183,12 +169,12 @@ public class CameraFragment extends Fragment {
             new Thread() {
                 @Override
                 public void run() {
-                    Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                    activity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (answer_panel.getVisibility() == View.INVISIBLE)
-                                answer_panel.setVisibility(View.VISIBLE);
-                            else answer_panel.setVisibility(View.INVISIBLE);
+                            if (answerPanel.getVisibility() == View.INVISIBLE)
+                                answerPanel.setVisibility(View.VISIBLE);
+                            else answerPanel.setVisibility(View.INVISIBLE);
 
                         }
                     });
@@ -203,17 +189,15 @@ public class CameraFragment extends Fragment {
         @Override
         public void onClick(View v) {
             String answer = editAnswer.getText().toString();
+            TaskManager taskManager = TaskManager.getInstance(null);
+            TargetManager targetManager = TargetManager.getInstance(null);
 
-            if (answer.equals(TaskManager.getInstance(null).getCurrentTask().getAnswer())) {
-                TargetManager.getInstance(null).nextTarget();
-                TaskManager.getInstance(null).nextTask();
+            if (answer.equals(taskManager.getCurrentTask().getAnswer())) {
+                targetManager.nextTarget();
+                taskManager.nextTask();
 
-                int iterator = TaskManager.getInstance(null).getCurrentIterator();
-                Log.d(CameraFragment.class.getSimpleName(), "iterator: " + iterator);
-
-                progressBar.setText(getString(R.string.progress, iterator, maxCount));
-
-                trackerRenderer.updateTargetCurrent();
+                updateProgressBar();
+                trackerRenderer.updateCurrent();
             }
         }
     };
@@ -221,9 +205,8 @@ public class CameraFragment extends Fragment {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isFront) {
             CameraDevice.getInstance().stop();
-
-            camera_id = (isFront) ? SampleUtil.FRONT_CAMERA : SampleUtil.REAR_CAMERA;
-            cameraStart(camera_id);
+            camera = (isFront) ? SampleUtil.FRONT_CAMERA : SampleUtil.REAR_CAMERA;
+            cameraStart(camera);
 
         }
     };
@@ -234,4 +217,16 @@ public class CameraFragment extends Fragment {
             CameraDevice.getInstance().setFlashLightMode(isChecked);
         }
     };
+
+    /**
+     *
+     */
+    public void updateProgressBar(){
+        int countTasks = TaskManager.getInstance(null).getCountTasks();
+        int countTargets = TargetManager.getInstance(null).getCountTargets();
+        this.maxCount = (countTargets > countTasks) ? countTasks : countTargets;
+        int iterator = TaskManager.getInstance(null).getCurrentIterator();
+
+        progressBar.setText(getString(R.string.progress, iterator, maxCount));
+    }
 }
