@@ -26,9 +26,6 @@ import com.maxst.ar.MaxstAR;
 import com.maxst.ar.ResultCode;
 import com.maxst.ar.TrackerManager;
 
-import java.util.Objects;
-
-
 public class CameraFragment extends Fragment {
 
     private Activity activity;
@@ -46,7 +43,6 @@ public class CameraFragment extends Fragment {
     private View answerPanel;
     private EditText editAnswer;
 
-    private int maxCount;
 
     private int camera = SampleUtil.REAR_CAMERA;
 
@@ -224,7 +220,8 @@ public class CameraFragment extends Fragment {
     public void updateProgressBar(){
         int countTasks = TaskManager.getInstance(null).getCountTasks();
         int countTargets = TargetManager.getInstance(null).getCountTargets();
-        this.maxCount = (countTargets > countTasks) ? countTasks : countTargets;
+        int maxCount = (countTargets > countTasks) ? countTasks : countTargets;
+
         int iterator = TaskManager.getInstance(null).getCurrentIterator();
 
         progressBar.setText(getString(R.string.progress, iterator, maxCount));
