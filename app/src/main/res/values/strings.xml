@@ -1,15 +1,12 @@
 <resources>
     <string name="app_name">IntellectualQuest</string>
-    <string name="app_key">QeBzgTfJ6dmBlLjeK2rZHUBpM3yslDOBV/qyVgWL8dY=</string>
+    <string name="app_key" translatable="false">QeBzgTfJ6dmBlLjeK2rZHUBpM3yslDOBV/qyVgWL8dY=</string>
 
-    <string name="title_shop">Shop</string>
     <string name="title_camera">Camera</string>
     <string name="title_info">Info</string>
     <string name="title_target">Target</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="info">Info</string>
-    <string name="target">Target</string>
-    <string name="progress">Пройдено %1$d из %2$d</string>
+    <string name="progress">Completed %1$d of %2$d</string>
+    <string name="openGL_not_support">OpenGl ES 2.0 is not supported</string>
 
 </resources>

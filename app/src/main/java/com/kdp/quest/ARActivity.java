@@ -7,6 +7,7 @@ import android.content.pm.ConfigurationInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.maxst.ar.MaxstAR;
@@ -15,12 +16,14 @@ import com.maxst.ar.TrackerManager;
 
 public abstract class ARActivity extends AppCompatActivity {
 
+    public static final String TAG = ARActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (!isSupportES2()) {
-            Toast.makeText(this, "OpenGl ES 2.0 is not supported", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.openGL_not_support), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -52,6 +55,10 @@ public abstract class ARActivity extends AppCompatActivity {
     private boolean isSupportES2() {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+
+        // TODO checking configurationInfo.reqGlEsVersion
+        Log.d(TAG, "reqGLEsVersion(ConfigurationInfo): " + configurationInfo.reqGlEsVersion);
+
         return (configurationInfo.reqGlEsVersion >= 0x20000);
     }
 }
