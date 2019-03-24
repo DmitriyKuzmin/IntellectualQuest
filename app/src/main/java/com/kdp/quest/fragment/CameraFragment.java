@@ -73,6 +73,7 @@ public class CameraFragment extends Fragment {
         editAnswer = answerPanel.findViewById(R.id.edit_message);
 
         progressBar = view.findViewById(R.id.progress_bar);
+        updateProgressBar();
 
         Button sendAnswerButton = answerPanel.findViewById(R.id.sendAnswerButton);
         sendAnswerButton.setOnClickListener(onClickSendMessageButton);

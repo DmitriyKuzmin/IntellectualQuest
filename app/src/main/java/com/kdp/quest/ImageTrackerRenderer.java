@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
+import android.view.View;
 
 import com.kdp.quest.fragment.CameraFragment;
 import com.kdp.quest.model.Target;
@@ -52,7 +53,7 @@ public class ImageTrackerRenderer implements Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         imageRender = new ImageRender();
-        updateTargetCurrent();
+        updateCurrent();
 
         backgroundRenderHelper = new BackgroundRenderHelper();
     }
@@ -82,19 +83,19 @@ public class ImageTrackerRenderer implements Renderer {
         float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
         TrackingResult trackingResult = state.getTrackingResult();
 
-        if (changeImage){
+        if (changeImage) {
             imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
             changeImage = false;
         }
 
         if (trackingResult.getCount() <= 0) {
-            CameraFragment.getInstance().invisibleButton();
+            CameraFragment.getInstance().setVisibilityOnTargetImageButton(View.INVISIBLE);
         }
 
         for (int i = 0; i < trackingResult.getCount(); i++) {
             Trackable trackable = trackingResult.getTrackable(i);
             if (!trackable.getName().equals(currentTarget.getName())) {
-                CameraFragment.getInstance().invisibleButton();
+                CameraFragment.getInstance().setVisibilityOnTargetImageButton(View.INVISIBLE);
                 continue;
             }
 
@@ -112,11 +113,11 @@ public class ImageTrackerRenderer implements Renderer {
             imageRender.setScale(trackable.getWidth(), trackable.getHeight(), 1.0f);
             imageRender.draw();
 
-            CameraFragment.getInstance().visibleButton();
+            CameraFragment.getInstance().setVisibilityOnTargetImageButton(View.VISIBLE);
         }
     }
 
-    public void updateTargetCurrent() {
+    public void updateCurrent() {
         currentTarget = TargetManager.getInstance(null).getCurrentTarget();
         currentTask = TaskManager.getInstance(null).getCurrentTask();
 
