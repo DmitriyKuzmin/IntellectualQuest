@@ -33,6 +33,8 @@ public class CameraFragment extends Fragment {
     @SuppressLint("StaticFieldLeak")
     private static CameraFragment instance;
 
+    private CameraDevice cameraDevice;
+
     private GLSurfaceView glSurfaceView;
     private ImageTrackerRenderer trackerRenderer;
 
@@ -60,6 +62,7 @@ public class CameraFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = getActivity();
+        cameraDevice = CameraDevice.getInstance();
     }
 
     @Override
@@ -112,7 +115,7 @@ public class CameraFragment extends Fragment {
         glSurfaceView.onPause();
 
         TrackerManager.getInstance().stopTracker();
-        CameraDevice.getInstance().stop();
+        cameraDevice.stop();
 
         MaxstAR.onPause();
     }
@@ -123,14 +126,14 @@ public class CameraFragment extends Fragment {
      * @param cameraId - {@link SampleUtil#FRONT_CAMERA} or {@link SampleUtil#REAR_CAMERA}
      */
     private void cameraStart(int cameraId) {
-        ResultCode resultCode = CameraDevice.getInstance().start(cameraId, 640, 480);
+        ResultCode resultCode = cameraDevice.start(cameraId, 640, 480);
 
         if (resultCode != ResultCode.Success) {
             //TODO Message of error
             activity.finish();
         }
 
-        CameraDevice.getInstance().flipVideo(CameraDevice.FlipDirection.VERTICAL, cameraId == 1);
+        cameraDevice.flipVideo(CameraDevice.FlipDirection.VERTICAL, cameraId == 1);
     }
 
     /**
@@ -201,7 +204,7 @@ public class CameraFragment extends Fragment {
     private CompoundButton.OnCheckedChangeListener onCheckedChangeDirectionCameraToggleButton = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isFront) {
-            CameraDevice.getInstance().stop();
+            cameraDevice.stop();
             camera = (isFront) ? SampleUtil.FRONT_CAMERA : SampleUtil.REAR_CAMERA;
             cameraStart(camera);
 
@@ -211,7 +214,7 @@ public class CameraFragment extends Fragment {
     private CompoundButton.OnCheckedChangeListener onCheckedChangeFlashLight = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            CameraDevice.getInstance().setFlashLightMode(isChecked);
+            cameraDevice.setFlashLightMode(isChecked);
         }
     };
 

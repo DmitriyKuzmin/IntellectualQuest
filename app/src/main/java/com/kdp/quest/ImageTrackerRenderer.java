@@ -22,9 +22,6 @@ import com.maxst.ar.TrackerManager;
 import com.maxst.ar.TrackingResult;
 import com.maxst.ar.TrackingState;
 
-
-import java.util.Arrays;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -51,11 +48,9 @@ public class ImageTrackerRenderer implements Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        backgroundRenderHelper = new BackgroundRenderHelper();
         imageRender = new ImageRender();
         updateCurrent();
-
-        backgroundRenderHelper = new BackgroundRenderHelper();
     }
 
     @Override
@@ -78,8 +73,6 @@ public class ImageTrackerRenderer implements Renderer {
         backgroundRenderHelper.drawBackground(image, backgroundPlaneProjectionMatrix);
 
 
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-
         float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
         TrackingResult trackingResult = state.getTrackingResult();
 
@@ -100,14 +93,6 @@ public class ImageTrackerRenderer implements Renderer {
             }
 
             imageRender.setProjectionMatrix(projectionMatrix);
-
-            Log.d(ImageTrackerRenderer.class.getSimpleName(), "----------------------------------------------");
-            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Projection matrix: " + Arrays.toString(projectionMatrix));
-            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Trackable pose Matrix: " + Arrays.toString(trackable.getPoseMatrix()));
-            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Width: " + trackable.getWidth());
-            Log.d(ImageTrackerRenderer.class.getSimpleName(), "Height: " + trackable.getHeight());
-            Log.d(ImageTrackerRenderer.class.getSimpleName(), "----------------------------------------------");
-
             imageRender.setTransform(trackable.getPoseMatrix());
             imageRender.setTranslate(0.0f, 0.0f, 0.0f);
             imageRender.setScale(trackable.getWidth(), trackable.getHeight(), 1.0f);
