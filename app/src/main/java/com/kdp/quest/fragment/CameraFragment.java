@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,37 +14,40 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.kdp.quest.ImageTrackerRenderer;
+import com.kdp.quest.TrackerRenderer;
 import com.kdp.quest.R;
-import com.kdp.quest.model.TargetManager;
-import com.kdp.quest.model.TaskManager;
-import com.kdp.quest.util.SampleUtil;
+import com.kdp.quest.model.list.TargetList;
+import com.kdp.quest.model.list.TaskList;
+import com.kdp.quest.util.CameraUtil;
 import com.maxst.ar.CameraDevice;
 import com.maxst.ar.MaxstAR;
-import com.maxst.ar.ResultCode;
 import com.maxst.ar.TrackerManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 public class CameraFragment extends Fragment {
 
+    private static final String TAG = CameraFragment.class.getSimpleName();
+    private static final int EGL_CONTEXT_CLIENT_VERSION = 2;
     private Activity activity;
 
     @SuppressLint("StaticFieldLeak")
     private static CameraFragment instance;
 
     private CameraDevice cameraDevice;
-
     private GLSurfaceView glSurfaceView;
-    private ImageTrackerRenderer trackerRenderer;
+
+    private TrackerManager trackerManager;
+    private TrackerRenderer trackerRenderer;
 
     private TextView progressBar;
-
-    private Button onTargetImageButton;
-
+    private Button toggleAnswerPanelButton;
     private View answerPanel;
     private EditText editAnswer;
 
-
-    private int camera = SampleUtil.REAR_CAMERA;
+    private int viewTypeCamera = CameraUtil.REAR_CAMERA;
 
     public static CameraFragment getInstance() {
         if (instance == null)
@@ -56,44 +57,44 @@ public class CameraFragment extends Fragment {
     }
 
     @SuppressLint("ValidFragment")
-    private CameraFragment() { }
+    private CameraFragment() {
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         activity = getActivity();
         cameraDevice = CameraDevice.getInstance();
+        trackerManager = TrackerManager.getInstance();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_camera, container, false);
 
-        onTargetImageButton = view.findViewById(R.id.on_target_image_btn);
-        onTargetImageButton.setOnClickListener(onClickOnTargetButton);
+        toggleAnswerPanelButton = view.findViewById(R.id.toggle_answer_panel_btn);
+        toggleAnswerPanelButton.setOnClickListener(onClickToggleAnswerPanel);
 
         answerPanel = view.findViewById(R.id.answer_panel);
         editAnswer = answerPanel.findViewById(R.id.edit_message);
-
-        progressBar = view.findViewById(R.id.progress_bar);
-        updateProgressBar();
-
-        Button sendAnswerButton = answerPanel.findViewById(R.id.sendAnswerButton);
-        sendAnswerButton.setOnClickListener(onClickSendMessageButton);
+        Button sendAnswerButton = answerPanel.findViewById(R.id.check_answer_btn);
+        sendAnswerButton.setOnClickListener(onClickCheckAnswerButton);
 
         glSurfaceView = view.findViewById(R.id.gl_surface_view);
-        glSurfaceView.setEGLContextClientVersion(SampleUtil.EGLContext_CLIENT_VERSION);
-
-        trackerRenderer = new ImageTrackerRenderer(activity);
+        glSurfaceView.setEGLContextClientVersion(EGL_CONTEXT_CLIENT_VERSION);
+        trackerRenderer = new TrackerRenderer(activity);
         glSurfaceView.setRenderer(trackerRenderer);
 
-
-        ToggleButton directionCameraToggleButton = view.findViewById(R.id.toggle_direction_camera);
-        directionCameraToggleButton.setChecked(false);
-        directionCameraToggleButton.setOnCheckedChangeListener(onCheckedChangeDirectionCameraToggleButton);
+        ToggleButton viewTypeCameraToggleButton = view.findViewById(R.id.toggle_view_type_camera);
+        viewTypeCameraToggleButton.setChecked(false);
+        viewTypeCameraToggleButton.setOnCheckedChangeListener(onCheckedChangeViewCameraToggleToggleButton);
 
         ToggleButton flashLightToggleButton = view.findViewById(R.id.toggle_flash_light);
         flashLightToggleButton.setOnCheckedChangeListener(onCheckedChangeFlashLight);
+
+        progressBar = view.findViewById(R.id.progress_bar);
+        updateProgressBar();
 
         return view;
     }
@@ -103,9 +104,9 @@ public class CameraFragment extends Fragment {
         super.onResume();
         glSurfaceView.onResume();
 
-        TrackerManager.getInstance().startTracker(TrackerManager.TRACKER_TYPE_IMAGE);
+        trackerManager.startTracker(TrackerManager.TRACKER_TYPE_IMAGE);
 
-        cameraStart(camera);
+        CameraUtil.startCamera(viewTypeCamera);
         MaxstAR.onResume();
     }
 
@@ -114,26 +115,10 @@ public class CameraFragment extends Fragment {
         super.onPause();
         glSurfaceView.onPause();
 
-        TrackerManager.getInstance().stopTracker();
+        trackerManager.stopTracker();
         cameraDevice.stop();
 
         MaxstAR.onPause();
-    }
-
-    /**
-     * Start Camera of Device
-     *
-     * @param cameraId - {@link SampleUtil#FRONT_CAMERA} or {@link SampleUtil#REAR_CAMERA}
-     */
-    private void cameraStart(int cameraId) {
-        ResultCode resultCode = cameraDevice.start(cameraId, 640, 480);
-
-        if (resultCode != ResultCode.Success) {
-            //TODO Message of error
-            activity.finish();
-        }
-
-        cameraDevice.flipVideo(CameraDevice.FlipDirection.VERTICAL, cameraId == 1);
     }
 
     /**
@@ -142,7 +127,7 @@ public class CameraFragment extends Fragment {
      * @param visibility - {@link View#VISIBLE}, {@link View#INVISIBLE}
      */
     public void setVisibilityOnTargetImageButton(final int visibility) {
-        if (onTargetImageButton.getVisibility() == visibility)
+        if (toggleAnswerPanelButton.getVisibility() == visibility)
             return;
 
         new Thread() {
@@ -151,10 +136,10 @@ public class CameraFragment extends Fragment {
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        onTargetImageButton.setVisibility(visibility);
+                        toggleAnswerPanelButton.setVisibility(visibility);
                         if (visibility == View.INVISIBLE) {
                             answerPanel.setVisibility(visibility);
-                            SampleUtil.hideKeyboard(activity, instance);
+                            CameraUtil.hideKeyboardFromFragment(activity, instance);
                         }
                     }
                 });
@@ -162,7 +147,7 @@ public class CameraFragment extends Fragment {
         }.start();
     }
 
-    public View.OnClickListener onClickOnTargetButton = new View.OnClickListener() {
+    private View.OnClickListener onClickToggleAnswerPanel = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
@@ -184,30 +169,39 @@ public class CameraFragment extends Fragment {
         }
     };
 
-    public View.OnClickListener onClickSendMessageButton = new View.OnClickListener() {
+    private View.OnClickListener onClickCheckAnswerButton = new View.OnClickListener() {
         @SuppressLint({"SetTextI18n", "ResourceType"})
         @Override
         public void onClick(View v) {
             String answer = editAnswer.getText().toString();
-            TaskManager taskManager = TaskManager.getInstance(null);
-            TargetManager targetManager = TargetManager.getInstance(null);
+            TaskList taskList = TaskList.getInstance(null);
+            TargetList targetList = TargetList.getInstance(null);
 
-            if (answer.equals(taskManager.getCurrentTask().getAnswer())) {
-                targetManager.nextTarget();
-                taskManager.nextTask();
+            if (!answer.equals(taskList.getCurrentTask().getAnswer()))
+                return;
 
-                updateProgressBar();
-                trackerRenderer.updateCurrent();
+            if (targetList.getCountTargets() - 1 == targetList.getCurrentIterator()) {
+                Log.d(TAG, "End Quest");
+                // TODO End Quest
+                return;
             }
+
+            targetList.nextTarget();
+            taskList.nextTask();
+            updateProgressBar();
+            trackerRenderer.updateCurrent();
+
+            editAnswer.getText().clear();
         }
     };
-    private CompoundButton.OnCheckedChangeListener onCheckedChangeDirectionCameraToggleButton = new CompoundButton.OnCheckedChangeListener() {
+
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeViewCameraToggleToggleButton = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isFront) {
             cameraDevice.stop();
-            camera = (isFront) ? SampleUtil.FRONT_CAMERA : SampleUtil.REAR_CAMERA;
-            cameraStart(camera);
+            viewTypeCamera = (isFront) ? CameraUtil.FRONT_CAMERA : CameraUtil.REAR_CAMERA;
 
+            CameraUtil.startCamera(viewTypeCamera);
         }
     };
 
@@ -219,14 +213,14 @@ public class CameraFragment extends Fragment {
     };
 
     /**
-     *
+     * setting progress based on  count tasks max  and current progress
      */
-    public void updateProgressBar(){
-        int countTasks = TaskManager.getInstance(null).getCountTasks();
-        int countTargets = TargetManager.getInstance(null).getCountTargets();
+    private void updateProgressBar() {
+        int countTasks = TaskList.getInstance(null).getCountTasks();
+        int countTargets = TargetList.getInstance(null).getCountTargets();
         int maxCount = (countTargets > countTasks) ? countTasks : countTargets;
 
-        int iterator = TaskManager.getInstance(null).getCurrentIterator();
+        int iterator = TaskList.getInstance(null).getCurrentIterator();
 
         progressBar.setText(getString(R.string.progress, iterator, maxCount));
     }

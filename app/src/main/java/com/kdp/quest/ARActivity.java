@@ -6,12 +6,14 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.maxst.ar.MaxstAR;
 import com.maxst.ar.TrackerManager;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 public abstract class ARActivity extends AppCompatActivity {
@@ -41,7 +43,7 @@ public abstract class ARActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         MaxstAR.setScreenOrientation(newConfig.orientation);
@@ -56,7 +58,6 @@ public abstract class ARActivity extends AppCompatActivity {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
 
-        // TODO checking configurationInfo.reqGlEsVersion
         Log.d(TAG, "reqGLEsVersion(ConfigurationInfo): " + configurationInfo.reqGlEsVersion);
 
         return (configurationInfo.reqGlEsVersion >= 0x20000);

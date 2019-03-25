@@ -1,7 +1,6 @@
 package com.kdp.quest.model;
 
-
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class Task {
     private static final String TASK_DIR = "TrackingResult/";
@@ -15,9 +14,6 @@ public class Task {
         this.answer = answer;
     }
 
-    public String getName() {
-        return name;
-    }
 
     public String getAnswer() {
         return answer;

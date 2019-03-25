@@ -22,7 +22,7 @@
         tools:ignore="RtlHardcoded">
 
         <ToggleButton
-            android:id="@+id/toggle_direction_camera"
+            android:id="@+id/toggle_view_type_camera"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="8dp"
@@ -51,7 +51,7 @@
 
 
         <Button
-            android:id="@+id/on_target_image_btn"
+            android:id="@+id/toggle_answer_panel_btn"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentStart="true"
@@ -62,20 +62,20 @@
             android:id="@+id/answer_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/on_target_image_btn"
+            android:layout_toEndOf="@+id/toggle_answer_panel_btn"
             android:visibility="invisible">
 
             <EditText
                 android:id="@+id/edit_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@+id/sendAnswerButton"
+                android:layout_toStartOf="@+id/check_answer_btn"
                 android:textColor="@android:color/white"
                 android:inputType="number|text"
                 tools:ignore="Autofill,LabelFor" />
 
             <Button
-                android:id="@+id/sendAnswerButton"
+                android:id="@+id/check_answer_btn"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"

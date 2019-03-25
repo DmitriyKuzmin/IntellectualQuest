@@ -1,29 +1,31 @@
-package com.kdp.quest.model;
+package com.kdp.quest.model.list;
 
 
+
+import com.kdp.quest.model.Target;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-public class TargetManager {
-    private static TargetManager instance;
+public class TargetList {
+    private static TargetList instance;
 
     private ListIterator<Target> targetIterator;
     private List<Target> targets;
     private Integer currentIterator = 0;
     private Integer countTargets;
 
-    private TargetManager(List<Target> targets) {
+    private TargetList(List<Target> targets) {
         this.targets = targets;
         countTargets = targets.size();
         targetIterator = targets.listIterator();
         this.nextTarget();
     }
 
-    public static TargetManager getInstance(List<Target> targets) {
+    public static TargetList getInstance(List<Target> targets) {
         if (instance == null)
-            instance = new TargetManager(targets);
+            instance = new TargetList(targets);
 
         return instance;
     }
@@ -50,6 +52,9 @@ public class TargetManager {
         return trackingFileName;
     }
 
+    public Integer getCurrentIterator() {
+        return currentIterator;
+    }
     public Integer getCountTargets() {
         return countTargets;
     }

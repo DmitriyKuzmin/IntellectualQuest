@@ -1,21 +1,22 @@
 package com.kdp.quest;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.BottomNavigationView.OnNavigationItemSelectedListener;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.MenuItem;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kdp.quest.fragment.CameraFragment;
 import com.kdp.quest.fragment.InfoFragment;
 import com.kdp.quest.fragment.TargetFragment;
 import com.kdp.quest.model.Target;
-import com.kdp.quest.model.TargetManager;
+import com.kdp.quest.model.list.TargetList;
 import com.kdp.quest.model.Task;
-import com.kdp.quest.model.TaskManager;
+import com.kdp.quest.model.list.TaskList;
 import com.maxst.ar.TrackerManager;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class MainActivity extends ARActivity {
         loadTrackerData();
     }
 
-    private OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new OnNavigationItemSelectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             Fragment fragment = null;
@@ -82,22 +83,33 @@ public class MainActivity extends ARActivity {
         transaction.commit();
     }
 
+    /**
+     * Initialize Targets and loading in TargetList
+     */
     private void initializeTargets() {
         ArrayList<Target> targets = new ArrayList<>();
         targets.add(new Target("Robot", "Lorem ipsum dolor."));
         targets.add(new Target("ClearCode", "Lorem ipsum dolor."));
-        TargetManager.getInstance(targets);
+        targets.add(new Target("Kish", "Lorem ipsum dolor."));
+        TargetList.getInstance(targets);
     }
 
+    /**
+     * Initialize Task and loading in TaskList
+     */
     private void initializeTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new Task("1", "95"));
         tasks.add(new Task("2", "4"));
-        TaskManager.getInstance(tasks);
+        tasks.add(new Task("3", "110"));
+        TaskList.getInstance(tasks);
     }
 
+    /**
+     * Load data for tracker from TargetList
+     */
     private void loadTrackerData() {
-        List<String> trackingFileName = TargetManager.getInstance(null).getTrackingFileName();
+        List<String> trackingFileName = TargetList.getInstance(null).getTrackingFileName();
         for (String s : trackingFileName) {
             TrackerManager.getInstance().addTrackerData(s, true);
         }

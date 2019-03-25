@@ -1,24 +1,26 @@
-package com.kdp.quest.model;
+package com.kdp.quest.model.list;
+
+import com.kdp.quest.model.Task;
 
 import java.util.List;
 import java.util.ListIterator;
 
-public class TaskManager {
-    private static TaskManager instance;
+public class TaskList {
+    private static TaskList instance;
 
     private ListIterator<Task> taskIterator;
     private List<Task> tasks;
     private Integer currentIterator = 0;
     private Integer countTasks;
 
-    public static TaskManager getInstance(List<Task> tasks) {
+    public static TaskList getInstance(List<Task> tasks) {
         if (instance == null)
-            instance = new TaskManager(tasks);
+            instance = new TaskList(tasks);
 
         return instance;
     }
 
-    private TaskManager(List<Task> tasks) {
+    private TaskList(List<Task> tasks) {
         this.tasks = tasks;
         countTasks = tasks.size();
         taskIterator = tasks.listIterator();

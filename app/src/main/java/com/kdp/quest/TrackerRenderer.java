@@ -8,9 +8,9 @@ import android.view.View;
 
 import com.kdp.quest.fragment.CameraFragment;
 import com.kdp.quest.model.Target;
-import com.kdp.quest.model.TargetManager;
+import com.kdp.quest.model.list.TargetList;
 import com.kdp.quest.model.Task;
-import com.kdp.quest.model.TaskManager;
+import com.kdp.quest.model.list.TaskList;
 import com.kdp.quest.renderer.BackgroundRenderHelper;
 import com.kdp.quest.renderer.ImageRender;
 import com.maxst.ar.CameraDevice;
@@ -25,8 +25,9 @@ import com.maxst.ar.TrackingState;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class ImageTrackerRenderer implements Renderer {
+public class TrackerRenderer implements Renderer {
 
+    private static final String TAG = TrackerRenderer.class.getSimpleName();
     private final Activity activity;
 
     private int surfaceWidth;
@@ -37,11 +38,11 @@ public class ImageTrackerRenderer implements Renderer {
     private Target currentTarget;
     private Task currentTask;
 
-    private Boolean changeImage = true;
+    private Boolean isChangeImage = true;
 
     private ImageRender imageRender;
 
-    public ImageTrackerRenderer(Activity activity) {
+    public TrackerRenderer(Activity activity) {
         this.activity = activity;
     }
 
@@ -76,9 +77,9 @@ public class ImageTrackerRenderer implements Renderer {
         float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
         TrackingResult trackingResult = state.getTrackingResult();
 
-        if (changeImage) {
+        if (isChangeImage) {
             imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
-            changeImage = false;
+            isChangeImage = false;
         }
 
         if (trackingResult.getCount() <= 0) {
@@ -102,17 +103,18 @@ public class ImageTrackerRenderer implements Renderer {
         }
     }
 
+    /**
+     * Updating current target and tasks in life cycle Renderer;
+     * changing flag replacing image
+     */
     public void updateCurrent() {
-        currentTarget = TargetManager.getInstance(null).getCurrentTarget();
-        currentTask = TaskManager.getInstance(null).getCurrentTask();
+        currentTarget = TargetList.getInstance(null).getCurrentTarget();
+        currentTask = TaskList.getInstance(null).getCurrentTask();
 
-        Log.d(ImageTrackerRenderer.class.getSimpleName(), "------------------------");
-        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Update Current: ");
-        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Target: " + currentTarget);
-        Log.d(ImageTrackerRenderer.class.getSimpleName(), "Task: " + currentTask);
-        Log.d(ImageTrackerRenderer.class.getSimpleName(), "------------------------");
+        Log.d(TAG, "Updated Target: " + currentTarget);
+        Log.d(TAG, "Updated Task: " + currentTask);
 
-        changeImage = true;
+        isChangeImage = true;
     }
 
 }

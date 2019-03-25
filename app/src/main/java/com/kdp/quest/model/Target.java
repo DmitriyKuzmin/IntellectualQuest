@@ -1,7 +1,7 @@
 package com.kdp.quest.model;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class Target {
     private static final String TARGET_DIR = "ImageTarget/";
@@ -16,10 +16,11 @@ public class Target {
         this.description = description;
     }
 
-    String getPathTargetMapFile() {
+    public String getPathTargetMapFile() {
         return TARGET_DIR + name + TARGET_MAP_FORMAT;
     }
-    public String getPathTargetImageFile(){
+
+    public String getPathTargetImageFile() {
         return TARGET_DIR + name + "_resized" + TARGET_IMAGE_FORMAT;
     }
 
@@ -30,11 +31,13 @@ public class Target {
     public String getDescription() {
         return description;
     }
+
     @NonNull
     @Override
     public String toString() {
         return "Target{" +
                 "name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }
