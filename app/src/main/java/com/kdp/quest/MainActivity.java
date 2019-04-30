@@ -5,12 +5,13 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,46 +28,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ARActivity {
+public class MainActivity extends ARActivity{
 
-    private ActionBar toolbar;
-
+    public BottomNavigationView navigation;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA},2);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
+        }
 
-        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        toolbar = getSupportActionBar();
-        toolbar.setTitle(getString(R.string.title_camera));
-        loadFragment(CameraFragment.getInstance());
+        mOnNavigationItemSelectedListener.onNavigationItemSelected(navigation.getMenu().getItem(0));
+        navigation.getMenu().getItem(2).setEnabled(false);
 
         initializeTargets();
         initializeTasks();
         loadTrackerData();
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+
+    public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             Fragment fragment = null;
+            menuItem.setChecked(true);
             switch (menuItem.getItemId()) {
+                case R.id.navigation_target:
+                    fragment = new TargetFragment();
+                    break;
                 case R.id.navigation_camera:
-                    toolbar.setTitle(getString(R.string.title_camera));
                     fragment = CameraFragment.getInstance();
                     break;
                 case R.id.navigation_info:
-                    toolbar.setTitle(getString(R.string.title_info));
                     fragment = new InfoFragment();
-                    break;
-                case R.id.navigation_target:
-                    toolbar.setTitle(getString(R.string.title_target));
-                    fragment = new TargetFragment();
                     break;
             }
 
@@ -78,15 +77,20 @@ public class MainActivity extends ARActivity {
         }
     };
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     /**
      * Loading fragment in frame container
      *
      * @param fragment - fragment for loading
      */
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_container, fragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack(String.valueOf(navigation.getSelectedItemId()));
         transaction.commit();
     }
 
@@ -95,7 +99,7 @@ public class MainActivity extends ARActivity {
      */
     private void initializeTargets() {
         ArrayList<Target> targets = new ArrayList<>();
-        targets.add(new Target("Robot", "Lorem ipsum dolor."));
+        targets.add(new Target("Robot", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a tortor at libero placerat mattis. Quisque mi lorem, commodo sit amet commodo sit amet, maximus sed quam. Vivamus eu viverra turpis. Pellentesque tincidunt nibh a placerat cursus. Duis velit sapien, ultricies venenatis semper vel, aliquet eu diam. Quisque egestas pellentesque rhoncus. Praesent sed faucibus magna. Nam non orci eu justo dignissim congue. Mauris nisi ligula, sodales et turpis ut, varius luctus sem. Suspendisse fringilla arcu a enim scelerisque, ac iaculis turpis sodales. Aliquam erat volutpat."));
         targets.add(new Target("ClearCode", "Lorem ipsum dolor."));
         targets.add(new Target("Kish", "Lorem ipsum dolor."));
         TargetList.getInstance(targets);

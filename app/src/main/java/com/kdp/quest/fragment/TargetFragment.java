@@ -10,9 +10,11 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kdp.quest.MainActivity;
 import com.kdp.quest.R;
 import com.kdp.quest.model.Target;
 import com.kdp.quest.model.list.TargetList;
@@ -37,12 +39,26 @@ public class TargetFragment extends Fragment {
         ImageView imageView = view.findViewById(R.id.target_image);
         imageView.setImageBitmap(MaxstARUtil.getBitmapFromAsset(currentTarget.getPathTargetImageFile(), Objects.requireNonNull(getActivity()).getAssets()));
 
-        TextView textView = view.findViewById(R.id.target_text);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            textView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
-        }
+        TextView targetDesc = view.findViewById(R.id.target_text);
+        targetDesc.setText(currentTarget.getDescription());
 
-        textView.setText(currentTarget.getDescription());
+        TextView targetName = view.findViewById(R.id.target_name);
+        targetName.setText(currentTarget.getName());
+
+        Button toCameraButton = view.findViewById(R.id.to_camera_btn);
+        toCameraButton.setOnClickListener(toCameraButtonOnClickListener);
+
         return view;
     }
+
+
+    private View.OnClickListener toCameraButtonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            if (mainActivity != null) {
+                mainActivity.mOnNavigationItemSelectedListener.onNavigationItemSelected(mainActivity.navigation.getMenu().getItem(1));
+            }
+        }
+    };
 }

@@ -7,6 +7,7 @@ import android.content.pm.ConfigurationInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.maxst.ar.MaxstAR;
@@ -62,4 +63,5 @@ public abstract class ARActivity extends AppCompatActivity {
 
         return (configurationInfo.reqGlEsVersion >= 0x20000);
     }
+
 }

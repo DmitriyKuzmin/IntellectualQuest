@@ -6,37 +6,61 @@
     tools:context=".fragment.TargetFragment">
 
     <RelativeLayout
+        android:layout_width="339dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginBottom="50dp"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
         tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/target_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Название"
+            android:textSize="10pt"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/target_image"
-            android:layout_width="200dp"
-            android:layout_alignParentTop="true"
-            android:layout_height="200dp"
-            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="234dp"
+            android:layout_below="@+id/target_name"
+            android:layout_marginTop="15dp"
             android:maxWidth="200dp"
             android:maxHeight="200dp"
             android:src="@drawable/ic_camera_send"
-            tools:ignore="ContentDescription"
-            android:layout_centerHorizontal="true"/>
+            tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/target_text"
-            android:paddingTop="15dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:layout_width="230dp"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_vertical|end"
+
+        <ScrollView
+            android:id="@+id/scroll_target_text"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_above="@+id/to_camera_btn"
             android:layout_below="@+id/target_image"
-            android:text="Текст о нахождении текущей цели. \n Много текста о нахождении текущей цели)"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:id="@+id/target_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Текст о нахождении текущей цели. \n Много текста о нахождении текущей цели)"
+                android:textSize="6pt"
+                tools:ignore="HardcodedText" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/to_camera_btn"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="0dp"
+            android:text="Перейти к камере"
             tools:ignore="HardcodedText" />
+
     </RelativeLayout>
 
 </FrameLayout>
