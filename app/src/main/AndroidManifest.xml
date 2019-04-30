@@ -16,16 +16,13 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
-            android:name=".PermissionCheckActivity"
-            android:configChanges="orientation|screenSize">
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Theme.AppCompat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="orientation|screenSize"
-            android:theme="@style/Theme.AppCompat" />
     </application>
 </manifest>
