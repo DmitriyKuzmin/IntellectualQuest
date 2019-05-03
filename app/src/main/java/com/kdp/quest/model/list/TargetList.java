@@ -52,10 +52,11 @@ public class TargetList {
         return trackingFileName;
     }
 
-    public Integer getCurrentIterator() {
-        return currentIterator;
-    }
     public Integer getCountTargets() {
         return countTargets;
+    }
+
+    public void resetIterator(){
+        targetIterator = targets.listIterator(0);
     }
 }

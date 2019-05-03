@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.FinishFragment">
+
+    <RelativeLayout
+        android:layout_width="339dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/finish_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Finish"
+            android:textSize="30pt"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            tools:ignore="HardcodedText" />
+        <Button
+            android:id="@+id/quest_again_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/finish_txt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="Начать заново"
+            tools:ignore="HardcodedText" />
+    </RelativeLayout>
+
+</FrameLayout>

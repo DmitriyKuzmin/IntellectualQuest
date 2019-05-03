@@ -31,7 +31,8 @@ public class TaskList {
         if (taskIterator.hasNext()) {
             currentIterator = taskIterator.nextIndex();
             taskIterator.next();
-        }
+        }else
+            currentIterator = countTasks;
     }
 
     public Task getCurrentTask() {
@@ -47,5 +48,10 @@ public class TaskList {
 
     public Integer getCountTasks() {
         return countTasks;
+    }
+
+
+    public void resetIterator(){
+        taskIterator = tasks.listIterator(0);
     }
 }

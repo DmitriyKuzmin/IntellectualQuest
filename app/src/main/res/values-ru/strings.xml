@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">Интелектуальный Квест</string>
     <string name="title_camera">Камера</string>
-    <string name="title_info">Помощь</string>
     <string name="title_target">Цель</string>
     <string name="progress">Пройдено %1$d из %2$d</string>
     <string name="openGL_not_support">"Не поддерживается OpenGl ES 2.0 "</string>
+    <string name="title_task">Задание</string>
 </resources>

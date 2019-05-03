@@ -2,6 +2,8 @@ package com.kdp.quest;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,10 +12,13 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kdp.quest.fragment.CameraFragment;
+import com.kdp.quest.fragment.FinishFragment;
 import com.kdp.quest.fragment.TargetFragment;
 import com.kdp.quest.fragment.TaskFragment;
 import com.kdp.quest.model.Target;
@@ -27,8 +32,10 @@ import java.util.List;
 
 
 public class MainActivity extends ARActivity {
-
+    ProgressBar progressBar;
     public BottomNavigationView navigation;
+    int maxValueCycle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +50,15 @@ public class MainActivity extends ARActivity {
         initializeTasks();
         loadTrackerData();
 
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.getProgressDrawable().setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_IN);
+
+        maxValueCycle = (TargetList.getInstance(null).getCountTargets() > TaskList.getInstance(null).getCountTasks())
+                ? TargetList.getInstance(null).getCountTargets()
+                : TaskList.getInstance(null).getCountTasks();
+
+        progressBar.setMax(maxValueCycle);
+
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         mOnNavigationItemSelectedListener.onNavigationItemSelected(navigation.getMenu().getItem(0));
@@ -50,7 +66,6 @@ public class MainActivity extends ARActivity {
 
 
     }
-
 
 
     public BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -68,7 +83,7 @@ public class MainActivity extends ARActivity {
                 case R.id.navigation_camera:
                     fragment = CameraFragment.getInstance();
                     break;
-                case R.id.navigation_info:
+                case R.id.navigation_task:
                     fragment = TaskFragment.getInstance();
                     break;
             }
@@ -94,11 +109,23 @@ public class MainActivity extends ARActivity {
     public void updateCurrent() {
         TaskList.getInstance(null).nextTask();
         TargetList.getInstance(null).nextTarget();
-        openItemNavigation(0);
+
+        Log.d(TAG, "updateCurrent: " + TaskList.getInstance(null).getCurrentIterator());
+        Log.d(TAG, "max: " + maxValueCycle);
+
+        progressBar.setProgress(TaskList.getInstance(null).getCurrentIterator());
+        if (maxValueCycle == TaskList.getInstance(null).getCurrentIterator()) {
+            for (int i = 0; i < navigation.getMenu().size(); i++) {
+                navigation.getMenu().getItem(i).setEnabled(false);
+            }
+            loadFragment(FinishFragment.getInstance());
+        }else
+            openItemNavigation(0);
     }
 
     @Override
-    public void onBackPressed() {}
+    public void onBackPressed() {
+    }
 
     /**
      * Loading fragment in frame container
