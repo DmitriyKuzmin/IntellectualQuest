@@ -41,13 +41,14 @@ public class TaskFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        current_task = TaskList.getInstance(null).getCurrentTask();
         activity = (MainActivity) getActivity();
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        current_task = TaskList.getInstance(null).getCurrentTask();
 
         View view = inflater.inflate(R.layout.fragment_task, container, false);
 

@@ -41,13 +41,14 @@ public class TargetFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        currentTarget = TargetList.getInstance(null).getCurrentTarget();
-
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        currentTarget = TargetList.getInstance(null).getCurrentTarget();
+
         View view = inflater.inflate(R.layout.fragment_target, container, false);
         ImageView imageView = view.findViewById(R.id.target_image);
         imageView.setImageBitmap(MaxstARUtil.getBitmapFromAsset(currentTarget.getPathTargetImageFile(), Objects.requireNonNull(getActivity()).getAssets()));

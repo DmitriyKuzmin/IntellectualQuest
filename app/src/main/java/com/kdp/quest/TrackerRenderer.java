@@ -69,7 +69,7 @@ public class TrackerRenderer implements Renderer {
             if (!trackable.getName().equals(currentTarget.getName())) {
                 continue;
             }
-
+            TargetList.getInstance(null).getCurrentTarget().setDetected(true);
             activity.openItemNavigation(2);
         }
     }

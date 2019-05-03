@@ -10,6 +10,7 @@ public class Target {
 
     private String name;
     private String description;
+    private boolean detected = false;
 
     public Target(String name, String description) {
         this.name = name;
@@ -39,5 +40,13 @@ public class Target {
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public boolean isDetected() {
+        return detected;
+    }
+
+    public void setDetected(boolean detected) {
+        this.detected = detected;
     }
 }

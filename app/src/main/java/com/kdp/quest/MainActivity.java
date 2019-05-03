@@ -38,14 +38,17 @@ public class MainActivity extends ARActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
         }
 
+
+        initializeTargets();
+        initializeTasks();
+        loadTrackerData();
+
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         mOnNavigationItemSelectedListener.onNavigationItemSelected(navigation.getMenu().getItem(0));
         navigation.getMenu().getItem(2).setEnabled(false);
 
-        initializeTargets();
-        initializeTasks();
-        loadTrackerData();
+
     }
 
 
@@ -57,6 +60,9 @@ public class MainActivity extends ARActivity {
             menuItem.setChecked(true);
             switch (menuItem.getItemId()) {
                 case R.id.navigation_target:
+                    if (!TargetList.getInstance(null).getCurrentTarget().isDetected())
+                        navigation.getMenu().getItem(2).setEnabled(false);
+
                     fragment = TargetFragment.getInstance();
                     break;
                 case R.id.navigation_camera:
@@ -92,8 +98,7 @@ public class MainActivity extends ARActivity {
     }
 
     @Override
-    public void onBackPressed() {
-    }
+    public void onBackPressed() {}
 
     /**
      * Loading fragment in frame container
