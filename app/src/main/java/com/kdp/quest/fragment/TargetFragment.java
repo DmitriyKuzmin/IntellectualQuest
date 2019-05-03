@@ -1,5 +1,6 @@
 package com.kdp.quest.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -24,7 +25,19 @@ import java.util.Objects;
 
 
 public class TargetFragment extends Fragment {
+
     private Target currentTarget;
+
+    @SuppressLint("StaticFieldLeak")
+    private static TargetFragment instance;
+
+    public static TargetFragment getInstance() {
+        if (instance == null)
+            instance = new TargetFragment();
+
+        return instance;
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

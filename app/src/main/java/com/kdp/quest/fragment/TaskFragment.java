@@ -1,5 +1,6 @@
 package com.kdp.quest.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,16 @@ public class TaskFragment extends Fragment {
     private EditText answer;
 
     private MainActivity activity;
+
+    @SuppressLint("StaticFieldLeak")
+    private static TaskFragment instance;
+
+    public static TaskFragment getInstance() {
+        if (instance == null)
+            instance = new TaskFragment();
+
+        return instance;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

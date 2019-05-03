@@ -44,9 +44,6 @@ public class CameraFragment extends Fragment {
         return instance;
     }
 
-    @SuppressLint("ValidFragment")
-    private CameraFragment() { }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreate ");
@@ -97,7 +94,6 @@ public class CameraFragment extends Fragment {
 
         MaxstAR.onPause();
     }
-
 
 
     private CompoundButton.OnCheckedChangeListener onCheckedChangeViewCameraToggleToggleButton = new CompoundButton.OnCheckedChangeListener() {

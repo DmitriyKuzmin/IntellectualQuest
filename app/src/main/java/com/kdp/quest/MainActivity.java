@@ -57,13 +57,13 @@ public class MainActivity extends ARActivity {
             menuItem.setChecked(true);
             switch (menuItem.getItemId()) {
                 case R.id.navigation_target:
-                    fragment = new TargetFragment();
+                    fragment = TargetFragment.getInstance();
                     break;
                 case R.id.navigation_camera:
                     fragment = CameraFragment.getInstance();
                     break;
                 case R.id.navigation_info:
-                    fragment = new TaskFragment();
+                    fragment = TaskFragment.getInstance();
                     break;
             }
 
