@@ -1,21 +1,14 @@
 package com.kdp.quest;
 
-import android.app.Activity;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
-import android.view.View;
 
-import com.kdp.quest.fragment.CameraFragment;
 import com.kdp.quest.model.Target;
 import com.kdp.quest.model.list.TargetList;
-import com.kdp.quest.model.Task;
-import com.kdp.quest.model.list.TaskList;
 import com.kdp.quest.renderer.BackgroundRenderHelper;
-import com.kdp.quest.renderer.ImageRender;
 import com.maxst.ar.CameraDevice;
 import com.maxst.ar.MaxstAR;
-import com.maxst.ar.MaxstARUtil;
 import com.maxst.ar.Trackable;
 import com.maxst.ar.TrackedImage;
 import com.maxst.ar.TrackerManager;
@@ -27,22 +20,17 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class TrackerRenderer implements Renderer {
 
-    private static final String TAG = TrackerRenderer.class.getSimpleName();
-    private final Activity activity;
 
+    private static final String TAG = TrackerRenderer.class.getSimpleName();
     private int surfaceWidth;
     private int surfaceHeight;
+    private MainActivity activity;
 
     private BackgroundRenderHelper backgroundRenderHelper;
 
     private Target currentTarget;
-    private Task currentTask;
 
-    private Boolean isChangeImage = true;
-
-    private ImageRender imageRender;
-
-    public TrackerRenderer(Activity activity) {
+    public TrackerRenderer(MainActivity activity) {
         this.activity = activity;
     }
 
@@ -50,8 +38,8 @@ public class TrackerRenderer implements Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         backgroundRenderHelper = new BackgroundRenderHelper();
-        imageRender = new ImageRender();
-        updateCurrent();
+        currentTarget = TargetList.getInstance(null).getCurrentTarget();
+        Log.d(TAG, "onSurfaceCreated: " + currentTarget);
     }
 
     @Override
@@ -74,47 +62,17 @@ public class TrackerRenderer implements Renderer {
         backgroundRenderHelper.drawBackground(image, backgroundPlaneProjectionMatrix);
 
 
-        float[] projectionMatrix = CameraDevice.getInstance().getProjectionMatrix();
         TrackingResult trackingResult = state.getTrackingResult();
-
-        if (isChangeImage) {
-            imageRender.setImage(MaxstARUtil.getBitmapFromAsset(currentTask.getPathTaskFile(), activity.getAssets()));
-            isChangeImage = false;
-        }
-
-        if (trackingResult.getCount() <= 0) {
-            CameraFragment.getInstance().setVisibilityOnTargetImageButton(View.INVISIBLE);
-        }
 
         for (int i = 0; i < trackingResult.getCount(); i++) {
             Trackable trackable = trackingResult.getTrackable(i);
             if (!trackable.getName().equals(currentTarget.getName())) {
-                CameraFragment.getInstance().setVisibilityOnTargetImageButton(View.INVISIBLE);
                 continue;
             }
 
-            imageRender.setProjectionMatrix(projectionMatrix);
-            imageRender.setTransform(trackable.getPoseMatrix());
-            imageRender.setTranslate(0.0f, 0.0f, 0.0f);
-            imageRender.setScale(trackable.getWidth(), trackable.getHeight(), 1.0f);
-            imageRender.draw();
-
-            CameraFragment.getInstance().setVisibilityOnTargetImageButton(View.VISIBLE);
+            activity.openItemNavigation(2);
         }
     }
 
-    /**
-     * Updating current target and tasks in life cycle Renderer;
-     * changing flag replacing image
-     */
-    public void updateCurrent() {
-        currentTarget = TargetList.getInstance(null).getCurrentTarget();
-        currentTask = TaskList.getInstance(null).getCurrentTask();
-
-        Log.d(TAG, "Updated Target: " + currentTarget);
-        Log.d(TAG, "Updated Task: " + currentTask);
-
-        isChangeImage = true;
-    }
 
 }

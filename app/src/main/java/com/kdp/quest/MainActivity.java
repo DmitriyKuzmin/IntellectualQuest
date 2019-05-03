@@ -8,16 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kdp.quest.fragment.CameraFragment;
-import com.kdp.quest.fragment.InfoFragment;
 import com.kdp.quest.fragment.TargetFragment;
+import com.kdp.quest.fragment.TaskFragment;
 import com.kdp.quest.model.Target;
 import com.kdp.quest.model.list.TargetList;
 import com.kdp.quest.model.Task;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends ARActivity{
+public class MainActivity extends ARActivity {
 
     public BottomNavigationView navigation;
     @Override
@@ -65,7 +63,7 @@ public class MainActivity extends ARActivity{
                     fragment = CameraFragment.getInstance();
                     break;
                 case R.id.navigation_info:
-                    fragment = new InfoFragment();
+                    fragment = new TaskFragment();
                     break;
             }
 
@@ -77,9 +75,24 @@ public class MainActivity extends ARActivity{
         }
     };
 
+    public void openItemNavigation(final Integer itemIndex) {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mOnNavigationItemSelectedListener.onNavigationItemSelected(navigation.getMenu().getItem(itemIndex));
+                navigation.getMenu().getItem(itemIndex).setEnabled(true);
+            }
+        });
+    }
+
+    public void updateCurrent() {
+        TaskList.getInstance(null).nextTask();
+        TargetList.getInstance(null).nextTarget();
+        openItemNavigation(0);
+    }
+
     @Override
     public void onBackPressed() {
-
     }
 
     /**
