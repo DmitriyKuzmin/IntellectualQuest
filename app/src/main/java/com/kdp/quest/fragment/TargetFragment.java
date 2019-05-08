@@ -26,8 +26,6 @@ import java.util.Objects;
 
 public class TargetFragment extends Fragment {
 
-    private Target currentTarget;
-
     @SuppressLint("StaticFieldLeak")
     private static TargetFragment instance;
 
@@ -47,7 +45,7 @@ public class TargetFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        currentTarget = TargetList.getInstance(null).getCurrentTarget();
+        Target currentTarget = TargetList.getInstance(null).getCurrentTarget();
 
         View view = inflater.inflate(R.layout.fragment_target, container, false);
         ImageView imageView = view.findViewById(R.id.target_image);
@@ -70,9 +68,7 @@ public class TargetFragment extends Fragment {
         @Override
         public void onClick(View v) {
             MainActivity mainActivity = (MainActivity) getActivity();
-            if (mainActivity != null) {
-                mainActivity.mOnNavigationItemSelectedListener.onNavigationItemSelected(mainActivity.navigation.getMenu().getItem(1));
-            }
+            Objects.requireNonNull(mainActivity).openNavigationItem(R.id.navigation_camera);
         }
     };
 }

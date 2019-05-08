@@ -1,5 +1,6 @@
 package com.kdp.quest;
 
+import android.app.Activity;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
@@ -66,13 +67,12 @@ public class TrackerRenderer implements Renderer {
 
         for (int i = 0; i < trackingResult.getCount(); i++) {
             Trackable trackable = trackingResult.getTrackable(i);
-            if (!trackable.getName().equals(currentTarget.getName())) {
+            if (!trackable.getName().equals(currentTarget.getName()))
                 continue;
-            }
             TargetList.getInstance(null).getCurrentTarget().setDetected(true);
-            activity.openItemNavigation(2);
+
+            activity.openNavigationItem(R.id.navigation_task);
         }
+
     }
-
-
 }

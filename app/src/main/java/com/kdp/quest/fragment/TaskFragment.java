@@ -1,6 +1,7 @@
 package com.kdp.quest.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import com.kdp.quest.MainActivity;
 import com.kdp.quest.R;
 import com.kdp.quest.model.Task;
+import com.kdp.quest.model.list.TargetList;
 import com.kdp.quest.model.list.TaskList;
 import com.maxst.ar.MaxstARUtil;
 
@@ -66,10 +68,17 @@ public class TaskFragment extends Fragment {
     private View.OnClickListener sendAnswerButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (answer.getText().toString().equals(current_task.getAnswer())) {
-                activity.updateCurrent();
-            } else
-                Log.d(TAG, "onClick: false");
+            current_task.setTrueUserAnswer(answer.getText().toString().equals(current_task.getAnswer()));
+            current_task.setUserAnswer(answer.getText().toString());
+
+            TaskList.getInstance(null).nextTask();
+            TargetList.getInstance(null).nextTarget();
+
+            if (TaskList.getInstance(null).getCurrentIterator() == 3)
+                activity.openNavigationItem(R.id.navigation_finish);
+            else
+                activity.openNavigationItem(R.id.navigation_target);
+
         }
     };
 

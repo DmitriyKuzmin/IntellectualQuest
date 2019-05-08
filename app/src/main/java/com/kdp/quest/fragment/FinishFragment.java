@@ -52,9 +52,11 @@ public class FinishFragment extends Fragment {
     private View.OnClickListener questAgainButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            TaskList.getInstance(null).resetIterator();
-            TargetList.getInstance(null).resetIterator();
-            activity.updateCurrent();
+            //TaskList.getInstance(null).resetIterator();
+            //TargetList.getInstance(null).resetIterator();
+            //activity.initNavigation();
+            //activity.setItemNavigationEnabled(true);
+            //activity.updateCurrent();
         }
     };
 }

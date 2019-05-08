@@ -10,11 +10,20 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.kdp.quest.model.Target;
+import com.kdp.quest.model.Task;
+import com.kdp.quest.model.list.TargetList;
+import com.kdp.quest.model.list.TaskList;
 import com.maxst.ar.MaxstAR;
 import com.maxst.ar.TrackerManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class ARActivity extends AppCompatActivity {
@@ -33,6 +42,10 @@ public abstract class ARActivity extends AppCompatActivity {
 
         MaxstAR.init(getApplicationContext(), getString(R.string.app_key));
         MaxstAR.setScreenOrientation(getResources().getConfiguration().orientation);
+
+        initializeTargets();
+        initializeTasks();
+        loadTrackerData();
     }
 
     @Override
@@ -59,9 +72,43 @@ public abstract class ARActivity extends AppCompatActivity {
         ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
 
-        Log.d(TAG, "reqGLEsVersion(ConfigurationInfo): " + configurationInfo.reqGlEsVersion);
-
         return (configurationInfo.reqGlEsVersion >= 0x20000);
     }
 
+    /**
+     * Initialize Targets and loading in TargetList
+     */
+    private void initializeTargets() {
+        ArrayList<Target> targets = new ArrayList<>();
+        targets.add(new Target("Robot", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a tortor at libero placerat mattis. Quisque mi lorem, commodo sit amet commodo sit amet, maximus sed quam. Vivamus eu viverra turpis. Pellentesque tincidunt nibh a placerat cursus. Duis velit sapien, ultricies venenatis semper vel, aliquet eu diam. Quisque egestas pellentesque rhoncus. Praesent sed faucibus magna. Nam non orci eu justo dignissim congue. Mauris nisi ligula, sodales et turpis ut, varius luctus sem. Suspendisse fringilla arcu a enim scelerisque, ac iaculis turpis sodales. Aliquam erat volutpat."));
+        targets.add(new Target("ClearCode", "Lorem ipsum dolor."));
+        targets.add(new Target("Kish", "Lorem ipsum dolor."));
+        TargetList.getInstance(targets);
+    }
+
+    /**
+     * Initialize Task and loading in TaskList
+     */
+    private void initializeTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("1", "95"));
+        tasks.add(new Task("2", "4"));
+        tasks.add(new Task("3", "110"));
+        TaskList.getInstance(tasks);
+    }
+
+    /**
+     * Load data for tracker from TargetList
+     */
+    private void loadTrackerData() {
+        List<String> trackingFileName = TargetList.getInstance(null).getTrackingFileName();
+        for (String s : trackingFileName) {
+            TrackerManager.getInstance().addTrackerData(s, true);
+        }
+        TrackerManager.getInstance().loadTrackerData();
+    }
+
+    @Override
+    public void onBackPressed() {
+    }
 }

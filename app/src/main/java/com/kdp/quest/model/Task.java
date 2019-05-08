@@ -8,6 +8,8 @@ public class Task {
 
     private String name;
     private String answer;
+    private String userAnswer;
+    private Boolean isTrueUserAnswer;
 
     public Task(String name, String answer) {
         this.name = name;
@@ -30,5 +32,13 @@ public class Task {
                 "name='" + name + '\'' +
                 ", answer='" + answer + '\'' +
                 '}';
+    }
+
+    public void setUserAnswer(String userAnswer) {
+        this.userAnswer = userAnswer;
+    }
+
+    public void setTrueUserAnswer(Boolean trueUserAnswer) {
+        isTrueUserAnswer = trueUserAnswer;
     }
 }
