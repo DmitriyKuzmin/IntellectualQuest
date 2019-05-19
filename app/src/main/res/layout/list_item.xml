@@ -8,9 +8,10 @@
 
     <TextView
         android:id="@+id/name"
-        android:textSize="12pt"
+        android:textSize="10pt"
+        android:text="Название специальности"
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
 
 </LinearLayout>

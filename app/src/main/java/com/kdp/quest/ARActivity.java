@@ -92,7 +92,7 @@ public abstract class ARActivity extends AppCompatActivity {
      */
     public void initializeTargets() {
         ArrayList<Target> targets = new ArrayList<>();
-        targets.add(new Target("Robot", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a tortor at libero placerat mattis. Quisque mi lorem, commodo sit amet commodo sit amet, maximus sed quam. Vivamus eu viverra turpis. Pellentesque tincidunt nibh a placerat cursus. Duis velit sapien, ultricies venenatis semper vel, aliquet eu diam. Quisque egestas pellentesque rhoncus. Praesent sed faucibus magna. Nam non orci eu justo dignissim congue. Mauris nisi ligula, sodales et turpis ut, varius luctus sem. Suspendisse fringilla arcu a enim scelerisque, ac iaculis turpis sodales. Aliquam erat volutpat."));
+        targets.add(new Target("Robot", "1) Пройдите на 2 этаж первого корпуса.\n 2) Зайдите в кабинет 204 \n 3) Цель находится на 3 парте 2 ряда"  ));
         targets.add(new Target("ClearCode", "Lorem ipsum dolor."));
         targets.add(new Target("Kish", "Lorem ipsum dolor."));
         TargetList.getInstance().setData(targets);

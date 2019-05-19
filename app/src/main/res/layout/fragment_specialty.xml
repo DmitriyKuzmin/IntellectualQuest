@@ -36,6 +36,7 @@
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/desc_specialty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="qwfq fqw qwfq wfq wfqwf qwfqw fq fq fqw fqw fq fq fqw fqw fqw fqw qwf"

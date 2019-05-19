@@ -133,6 +133,7 @@ public class MainActivity extends ARActivity {
         targetList = TargetList.getInstance();
         taskList = TaskList.getInstance();
 
+        navigation.setVisibility(View.VISIBLE);
         progressBar.setProgress(taskList.getCurrentIterator());
         openNavigationItem(R.id.navigation_target);
     }

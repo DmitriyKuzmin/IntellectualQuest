@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.kdp.quest.MainActivity;
 import com.kdp.quest.R;
@@ -49,6 +50,13 @@ public class SpecialtyFragment extends Fragment {
 
         ImageButton button = view.findViewById(R.id.close_specialty);
         button.setOnClickListener(closeButtonOnClickListener);
+
+        TextView name = view.findViewById(R.id.name_specialty);
+        name.setText(specialty.getName());
+
+        TextView desc = view.findViewById(R.id.desc_specialty);
+        desc.setText(specialty.getDescription());
+
         return view;
     }
 
