@@ -10,11 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,19 +23,19 @@ import com.kdp.quest.fragment.CameraFragment;
 import com.kdp.quest.fragment.FinishFragment;
 import com.kdp.quest.fragment.TargetFragment;
 import com.kdp.quest.fragment.TaskFragment;
-import com.kdp.quest.model.Target;
 import com.kdp.quest.model.list.TargetList;
-import com.kdp.quest.model.Task;
 import com.kdp.quest.model.list.TaskList;
-import com.maxst.ar.TrackerManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class MainActivity extends ARActivity {
-    ProgressBar progressBar;
+    TargetList targetList;
+    TaskList taskList;
+
+    int max;
+    public ProgressBar progressBar;
     public BottomNavigationView navigation;
+    public int selectIdNavigation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,19 +46,26 @@ public class MainActivity extends ARActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
         }
 
+        taskList = TaskList.getInstance();
+        targetList = TargetList.getInstance();
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
 
+        max = (targetList.getCountTargets() > taskList.getCountTasks()) ? taskList.getCountTasks() : targetList.getCountTargets();
+        progressBar.setMax(max);
+
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         openNavigationItem(R.id.navigation_target);
+
+
     }
 
 
-    public void enableElementsNavigation() {
-        for (int i = 0; i < 3; i++) {
-            navigation.getMenu().getItem(i).setEnabled(true);
+    public void enableElementsNavigation(boolean flag) {
+        for (int i = 0; i < navigation.getMenu().size(); i++) {
+            navigation.getMenu().getItem(i).setEnabled(flag);
         }
     }
 
@@ -66,24 +74,24 @@ public class MainActivity extends ARActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             Fragment fragment = null;
 
+            boolean isDetectedTarget = targetList.getCurrentTarget().isDetected();
+
             switch (menuItem.getItemId()) {
                 case R.id.navigation_target:
                     fragment = TargetFragment.getInstance();
-                    if (!TargetList.getInstance(null).getCurrentTarget().isDetected())
+                    if (!isDetectedTarget)
                         navigation.getMenu().getItem(2).setEnabled(false);
                     break;
                 case R.id.navigation_camera:
                     fragment = CameraFragment.getInstance();
-                    if (!TargetList.getInstance(null).getCurrentTarget().isDetected())
+                    if (!isDetectedTarget)
                         navigation.getMenu().getItem(2).setEnabled(false);
                     break;
                 case R.id.navigation_task:
                     fragment = TaskFragment.getInstance();
                     break;
                 case R.id.navigation_finish:
-                    for (int i = 0; i < 3; i++) {
-                        navigation.getMenu().getItem(i).setEnabled(false);
-                    }
+                    enableElementsNavigation(false);
                     fragment = FinishFragment.getInstance();
                     break;
             }
@@ -91,6 +99,7 @@ public class MainActivity extends ARActivity {
             if (fragment == null)
                 return false;
 
+            selectIdNavigation = menuItem.getItemId();
             loadFragment(fragment);
             return true;
         }
@@ -103,8 +112,8 @@ public class MainActivity extends ARActivity {
      */
     public void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame_container, fragment);
-        transaction.addToBackStack(null);
+        transaction.replace(R.id.frame_container, fragment, fragment.getClass().getName());
+        transaction.addToBackStack(fragment.getClass().getName());
         transaction.commit();
     }
 
@@ -112,9 +121,22 @@ public class MainActivity extends ARActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                enableElementsNavigation();
+                enableElementsNavigation(true);
                 navigation.setSelectedItemId(itemId);
             }
         });
     }
+    public void resetQuest(){
+        initializeTargets();
+        initializeTasks();
+
+        targetList = TargetList.getInstance();
+        taskList = TaskList.getInstance();
+
+        progressBar.setProgress(taskList.getCurrentIterator());
+        openNavigationItem(R.id.navigation_target);
+    }
+
+    @Override
+    public void onBackPressed() { }
 }

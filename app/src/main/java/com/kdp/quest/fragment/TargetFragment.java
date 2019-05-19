@@ -45,7 +45,7 @@ public class TargetFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Target currentTarget = TargetList.getInstance(null).getCurrentTarget();
+        Target currentTarget = TargetList.getInstance().getCurrentTarget();
 
         View view = inflater.inflate(R.layout.fragment_target, container, false);
         ImageView imageView = view.findViewById(R.id.target_image);

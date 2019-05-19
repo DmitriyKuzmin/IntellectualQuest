@@ -35,4 +35,5 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
     implementation files("$MAXST_SDK_DIR/MaxstAR.jar")
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }

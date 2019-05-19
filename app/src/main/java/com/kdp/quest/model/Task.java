@@ -8,12 +8,15 @@ public class Task {
 
     private String name;
     private String answer;
+    private int category;
+
     private String userAnswer;
     private Boolean isTrueUserAnswer;
 
-    public Task(String name, String answer) {
+    public Task(String name, String answer, int category) {
         this.name = name;
         this.answer = answer;
+        this.category = category;
     }
 
 

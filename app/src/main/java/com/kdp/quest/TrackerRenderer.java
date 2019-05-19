@@ -39,7 +39,7 @@ public class TrackerRenderer implements Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         backgroundRenderHelper = new BackgroundRenderHelper();
-        currentTarget = TargetList.getInstance(null).getCurrentTarget();
+        currentTarget = TargetList.getInstance().getCurrentTarget();
         Log.d(TAG, "onSurfaceCreated: " + currentTarget);
     }
 
@@ -69,7 +69,7 @@ public class TrackerRenderer implements Renderer {
             Trackable trackable = trackingResult.getTrackable(i);
             if (!trackable.getName().equals(currentTarget.getName()))
                 continue;
-            TargetList.getInstance(null).getCurrentTarget().setDetected(true);
+            TargetList.getInstance().getCurrentTarget().setDetected(true);
 
             activity.openNavigationItem(R.id.navigation_task);
         }

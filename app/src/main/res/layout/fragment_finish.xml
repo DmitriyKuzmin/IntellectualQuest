@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.FinishFragment">
 
     <RelativeLayout
@@ -20,17 +21,29 @@
             android:text="Finish"
             android:textSize="30pt"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             tools:ignore="HardcodedText" />
         <Button
             android:id="@+id/quest_again_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/finish_txt"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
+            android:layout_alignParentBottom="true"
             android:text="Начать заново"
             tools:ignore="HardcodedText" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="UselessLeaf"
+            android:layout_above="@id/quest_again_btn"
+            android:layout_below="@id/finish_txt">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/specialties"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </ScrollView>
     </RelativeLayout>
 
 </FrameLayout>

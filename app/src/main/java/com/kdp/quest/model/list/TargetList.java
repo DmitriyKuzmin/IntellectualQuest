@@ -16,18 +16,19 @@ public class TargetList {
     private Integer currentIterator = 0;
     private Integer countTargets;
 
-    private TargetList(List<Target> targets) {
+
+    public static TargetList getInstance() {
+        if (instance == null)
+            instance = new TargetList();
+
+        return instance;
+    }
+
+    public void setData(List<Target> targets){
         this.targets = targets;
         countTargets = targets.size();
         targetIterator = targets.listIterator();
         this.nextTarget();
-    }
-
-    public static TargetList getInstance(List<Target> targets) {
-        if (instance == null)
-            instance = new TargetList(targets);
-
-        return instance;
     }
 
     public void nextTarget() {

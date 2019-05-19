@@ -1,13 +1,12 @@
 package com.kdp.quest.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import com.maxst.ar.MaxstARUtil;
 import java.util.Objects;
 
 public class TaskFragment extends Fragment {
-    private final static String TAG = TaskFragment.class.getSimpleName();
     private Task current_task;
     private EditText answer;
 
@@ -47,10 +45,11 @@ public class TaskFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    @SuppressLint("CutPasteId")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        current_task = TaskList.getInstance(null).getCurrentTask();
+        current_task = TaskList.getInstance().getCurrentTask();
 
         View view = inflater.inflate(R.layout.fragment_task, container, false);
 
@@ -62,6 +61,9 @@ public class TaskFragment extends Fragment {
         Button sendAnswerButton = view.findViewById(R.id.send_answer_btn);
         sendAnswerButton.setOnClickListener(sendAnswerButtonOnClickListener);
 
+        EditText editText = view.findViewById(R.id.task_answer_edit_text);
+        editText.setText(current_task.getAnswer());
+
         return view;
     }
 
@@ -71,13 +73,17 @@ public class TaskFragment extends Fragment {
             current_task.setTrueUserAnswer(answer.getText().toString().equals(current_task.getAnswer()));
             current_task.setUserAnswer(answer.getText().toString());
 
-            TaskList.getInstance(null).nextTask();
-            TargetList.getInstance(null).nextTarget();
+            TaskList.getInstance().nextTask();
+            TargetList.getInstance().nextTarget();
 
-            if (TaskList.getInstance(null).getCurrentIterator() == 3)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                activity.progressBar.setProgress(TaskList.getInstance().getCurrentIterator(), true);
+
+            if (TaskList.getInstance().getCurrentIterator() == 3)
                 activity.openNavigationItem(R.id.navigation_finish);
-            else
+            else {
                 activity.openNavigationItem(R.id.navigation_target);
+            }
 
         }
     };
